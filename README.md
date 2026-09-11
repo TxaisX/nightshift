@@ -76,7 +76,7 @@ the ones you want. Among the most useful:
 
 | Command | What it does |
 | --- | --- |
-| Toggle Agent Dashboard | One view of every agent and what it is doing |
+| Toggle Agent Dashboard | One view of every agent and what it is doing (see below) |
 | Toggle Workspace Board | The board view of your workspaces |
 | Equalize pane sizes | Evens up panes you have split inside a tab |
 | New agent tab | Opens a tab already running your default agent |
@@ -100,6 +100,21 @@ Assign them in the shortcut list, or add them under the `platforms` block of
 
 `Mod` is Ctrl on Windows and Linux, Command on macOS. The app validates the file
 on load and reports conflicts rather than silently dropping a binding.
+
+### The agent dashboard is opt-in
+
+The dashboard is the closest thing to a control tower: one board of every agent
+across every workspace, with sub-agents nested under the session that spawned
+them and a status dot each. It ships behind an experimental setting and is off
+by default, so its shortcut does nothing and its row is hidden in the shortcut
+list until you turn it on.
+
+Enable **Experimental agent dashboard popout** in Settings, then bind
+`dashboard.toggle`. Without that setting, binding the shortcut alone has no
+effect, which is easy to mistake for a broken key.
+
+Day to day you may not need it: each workspace row in the sidebar already shows
+its agent and state, for example `Claude Code - Idle`.
 
 ## License
 

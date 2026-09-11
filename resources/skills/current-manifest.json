@@ -1,0 +1,149 @@
+{
+  "schemaVersion": 2,
+  "skills": [
+    {
+      "name": "computer-use",
+      "sourcePath": "skills/computer-use",
+      "releaseRevision": 10,
+      "packageDigest": "49d736a2bd7c9d518b68d9325c3e80134792b6b55bde8c69d8a032bf5174962a",
+      "gitTreeSha": "447363b84b0907ffe75d407339cc9e676e09040d",
+      "files": [
+        {
+          "path": "SKILL.md",
+          "size": 1991,
+          "executable": false,
+          "classification": "text",
+          "exactSha256": "47c270535d1fea79a330ef3e20d1add8337bc41a7288809ff025ff504523e8ad",
+          "textNormalizedSha256": "47c270535d1fea79a330ef3e20d1add8337bc41a7288809ff025ff504523e8ad",
+          "identitySha256": "47c270535d1fea79a330ef3e20d1add8337bc41a7288809ff025ff504523e8ad"
+        }
+      ]
+    },
+    {
+      "name": "linear-tickets",
+      "sourcePath": "skills/linear-tickets",
+      "releaseRevision": 12,
+      "packageDigest": "b49d1e53f4053943a460f676180d1a590c488fc8fa260ebadeb3bf370f848b7a",
+      "gitTreeSha": "f39965dd3daf2356696d2af8a8bec8c1fa726380",
+      "files": [
+        {
+          "path": "SKILL.md",
+          "size": 2196,
+          "executable": false,
+          "classification": "text",
+          "exactSha256": "18916e69ec28fc74cae5c6e57101ea86c4ddbb01e3ce460915c2cb35d2c8a76c",
+          "textNormalizedSha256": "18916e69ec28fc74cae5c6e57101ea86c4ddbb01e3ce460915c2cb35d2c8a76c",
+          "identitySha256": "18916e69ec28fc74cae5c6e57101ea86c4ddbb01e3ce460915c2cb35d2c8a76c"
+        }
+      ]
+    },
+    {
+      "name": "nightshift-cli",
+      "sourcePath": "skills/nightshift-cli",
+      "releaseRevision": 38,
+      "packageDigest": "347a88bfb76c54050996b046352ee1a4f768117ae8d1ef4e5348f826734e6298",
+      "gitTreeSha": "e260d2137b6d2f1acc24c3210cbd915d39d72075",
+      "files": [
+        {
+          "path": "SKILL.md",
+          "size": 2417,
+          "executable": false,
+          "classification": "text",
+          "exactSha256": "44b466281617aca36d1994b2db5307c7923ce1c86c7f1c0d4c58d2b9a8b8daf9",
+          "textNormalizedSha256": "44b466281617aca36d1994b2db5307c7923ce1c86c7f1c0d4c58d2b9a8b8daf9",
+          "identitySha256": "44b466281617aca36d1994b2db5307c7923ce1c86c7f1c0d4c58d2b9a8b8daf9"
+        }
+      ]
+    },
+    {
+      "name": "nightshift-emulator",
+      "sourcePath": "skills/nightshift-emulator",
+      "releaseRevision": 9,
+      "packageDigest": "d1983111cfdb2ee4493dcaea0a4984ed1dc8e85fad7e2ab0e70ddd7a4814b8c8",
+      "gitTreeSha": "4376a4a6e26d150c9fa88f7f537b8fcdec007c68",
+      "files": [
+        {
+          "path": "SKILL.md",
+          "size": 2326,
+          "executable": false,
+          "classification": "text",
+          "exactSha256": "f115c886da11b339e6f7f2bc16a00401d611d52788ea06cc7966572a68ee47f4",
+          "textNormalizedSha256": "f115c886da11b339e6f7f2bc16a00401d611d52788ea06cc7966572a68ee47f4",
+          "identitySha256": "f115c886da11b339e6f7f2bc16a00401d611d52788ea06cc7966572a68ee47f4"
+        }
+      ]
+    },
+    {
+      "name": "nightshift-emulator-android",
+      "sourcePath": "skills/nightshift-emulator-android",
+      "releaseRevision": 7,
+      "packageDigest": "e996009de15c5bd3811a5d0d36e3d0a7540a9d5d61db6f199d5b92c70c6df143",
+      "gitTreeSha": "88364e61689a40e803f5e79e9f9586cf2cda92f0",
+      "files": [
+        {
+          "path": "SKILL.md",
+          "size": 2211,
+          "executable": false,
+          "classification": "text",
+          "exactSha256": "1c4d7d47d5cfe73e67a67fb0d41d563138937de60106b9adf2d0a8b29f49cc6b",
+          "textNormalizedSha256": "1c4d7d47d5cfe73e67a67fb0d41d563138937de60106b9adf2d0a8b29f49cc6b",
+          "identitySha256": "1c4d7d47d5cfe73e67a67fb0d41d563138937de60106b9adf2d0a8b29f49cc6b"
+        }
+      ]
+    },
+    {
+      "name": "nightshift-linear",
+      "sourcePath": "skills/nightshift-linear",
+      "releaseRevision": 10,
+      "packageDigest": "31c18de233521fbac701ae291d4349fe5fb59c88f8b04e7b6575993b5d717c99",
+      "gitTreeSha": "b3de6435361b7ebe7c72be9c953f7e19737462cc",
+      "files": [
+        {
+          "path": "SKILL.md",
+          "size": 2059,
+          "executable": false,
+          "classification": "text",
+          "exactSha256": "4c8c516da0612af13b59d20ba4ae25b9299f6acd5f6be4c1890e878a17848e39",
+          "textNormalizedSha256": "4c8c516da0612af13b59d20ba4ae25b9299f6acd5f6be4c1890e878a17848e39",
+          "identitySha256": "4c8c516da0612af13b59d20ba4ae25b9299f6acd5f6be4c1890e878a17848e39"
+        }
+      ]
+    },
+    {
+      "name": "nightshift-per-workspace-env",
+      "sourcePath": "skills/nightshift-per-workspace-env",
+      "releaseRevision": 7,
+      "packageDigest": "ca1f7806e849141d2d3908433bd9a78d9e7a1fcb1912544b684233e3ec7e858c",
+      "gitTreeSha": "f7bbe34d2988a47d1ea25a305136e39462196f62",
+      "files": [
+        {
+          "path": "SKILL.md",
+          "size": 2246,
+          "executable": false,
+          "classification": "text",
+          "exactSha256": "783bec74cb6f4a7395c558a8308f669e79f890207953a219fa83f4835527aa79",
+          "textNormalizedSha256": "783bec74cb6f4a7395c558a8308f669e79f890207953a219fa83f4835527aa79",
+          "identitySha256": "783bec74cb6f4a7395c558a8308f669e79f890207953a219fa83f4835527aa79"
+        }
+      ]
+    },
+    {
+      "name": "orchestration",
+      "sourcePath": "skills/orchestration",
+      "releaseRevision": 30,
+      "packageDigest": "b2e5c58f17303dfe451060d4972cd7045118f86a5f154c8e7186076e1eeeeff5",
+      "gitTreeSha": "bd1863fd65b8e7e6202e5ef338a6df49e375d42a",
+      "files": [
+        {
+          "path": "SKILL.md",
+          "size": 4060,
+          "executable": false,
+          "classification": "text",
+          "exactSha256": "5b0e0f4f0c9fdc6b529efc8377a1114ec142a815e72f4656a69d6df90c9dfdc4",
+          "textNormalizedSha256": "5b0e0f4f0c9fdc6b529efc8377a1114ec142a815e72f4656a69d6df90c9dfdc4",
+          "identitySha256": "5b0e0f4f0c9fdc6b529efc8377a1114ec142a815e72f4656a69d6df90c9dfdc4"
+        }
+      ]
+    }
+  ]
+}

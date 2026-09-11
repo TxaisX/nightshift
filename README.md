@@ -103,15 +103,25 @@ on load and reports conflicts rather than silently dropping a binding.
 
 ### The agent dashboard is opt-in
 
-The dashboard is the closest thing to a control tower: one board of every agent
-across every workspace, with sub-agents nested under the session that spawned
-them and a status dot each. It ships behind an experimental setting and is off
-by default, so its shortcut does nothing and its row is hidden in the shortcut
-list until you turn it on.
+The dashboard is the control tower. It opens in its own window as a board of
+every agent across every workspace, in three columns:
 
+| Column | What lands there |
+| --- | --- |
+| Needs you | Agents parked on a question only you can answer |
+| Working | Agents currently running |
+| Done | Agents that finished |
+
+Sub-agents nest under the session that spawned them, each row carries a status
+dot, and a filter narrows the board. The board can also start an agent, so it
+is a place to act from and not only to watch.
+
+It ships behind an experimental setting and is off by default, so its shortcut
+does nothing and its row is hidden in the shortcut list until you turn it on.
 Enable **Experimental agent dashboard popout** in Settings, then bind
-`dashboard.toggle`. Without that setting, binding the shortcut alone has no
-effect, which is easy to mistake for a broken key.
+`dashboard.toggle`. Turning it on also adds an Agent Dashboard entry to the
+sidebar. Binding the shortcut without the setting has no effect, which is easy
+to mistake for a broken key.
 
 Day to day you may not need it: each workspace row in the sidebar already shows
 its agent and state, for example `Claude Code - Idle`.

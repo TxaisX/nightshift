@@ -82,6 +82,10 @@ export type TerminalActions = {
       viewMode?: Tab['viewMode']
       startupCwd?: string
       forceHostRuntime?: boolean
+      /** Creates the tab in the "no agent chosen yet" state: it shows in the
+       *  tab bar but mounts `AgentPickerPane` instead of `TerminalPane`, so no
+       *  pty spawns until the user picks. See `TerminalTab.pendingAgentChoice`. */
+      pendingAgentChoice?: boolean
     }
   ) => TerminalTab
   openNewTerminalTabInActiveWorkspace: (groupId: string) => Promise<void>
@@ -115,6 +119,11 @@ export type TerminalActions = {
   ) => void
   setGeneratedTabTitlesFromAgentPrompts: (updates: readonly GeneratedTabTitleUpdate[]) => void
   clearTabLaunchAgent: (tabId: string) => void
+  /** Resolves a pending-agent-choice tab back to a normal terminal (clears the
+   *  flag) without touching its launch config. Used for the 'blank' pick,
+   *  where "resolve" just means letting `TerminalPane` mount and spawn the
+   *  default shell like any other plain tab. */
+  resolveTabPendingAgentChoice: (tabId: string) => void
   setRuntimePaneTitle: (tabId: string, paneId: number, title: string) => void
   clearRuntimePaneTitle: (tabId: string, paneId: number) => void
   markTerminalTabUnread: (tabId: string) => void

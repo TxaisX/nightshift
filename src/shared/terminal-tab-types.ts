@@ -53,6 +53,12 @@ export type TerminalTab = {
    *  `sortEpoch` increments. Split layouts use a numeric count because one tab
    *  can remount several panes. Never persisted — it is a transient handoff. */
   pendingActivationSpawn?: boolean | number
+  /** Why: tab exists (shows in the tab bar) but no agent/blank choice has been
+   *  made yet, so no pty should spawn. `TerminalLegacyTerminalPanes` renders
+   *  `AgentPickerPane` instead of `TerminalPane` while this is true; picking
+   *  clears it. Additive and optional — every existing tab omits it and keeps
+   *  today's immediate-spawn behavior exactly. */
+  pendingAgentChoice?: boolean
 }
 
 export type TerminalPaneSplitDirection = 'vertical' | 'horizontal'

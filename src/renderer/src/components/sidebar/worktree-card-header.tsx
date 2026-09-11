@@ -2,6 +2,8 @@ import React from 'react'
 import { AlertCircle, Server, ServerOff, Star, Trash2 } from 'lucide-react'
 
 import { RepoIconGlyph } from '@/components/repo/repo-icon'
+import { SessionCountBadge } from '@/components/session-rail/SessionCountBadge'
+import { useLiveSessionCount } from '@/components/session-rail/use-live-session-count'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
@@ -78,6 +80,7 @@ export function WorktreeCardHeader({
     isFolder,
     handleWorkspaceQuickAction
   } = card
+  const liveSessionCount = useLiveSessionCount(worktree.id)
   const {
     showPinnedRepoIcon,
     showInlineRepoBadge,
@@ -262,6 +265,10 @@ export function WorktreeCardHeader({
         )}
 
         {showTitleRowIndicators && titleRowIndicators}
+
+        {/* Why: BridgeMind-style at-a-glance count — how many terminal
+            sessions are live in this worktree right now. Quiet at zero. */}
+        <SessionCountBadge count={liveSessionCount} />
       </div>
 
       {showHeaderActions && (

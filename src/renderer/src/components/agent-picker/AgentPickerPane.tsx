@@ -45,7 +45,7 @@ export function AgentPickerPane({
     : []
 
   return (
-    <div className="flex size-full flex-col items-center justify-center gap-6 overflow-y-auto p-8">
+    <div className="scrollbar-sleek flex size-full flex-col items-center justify-center gap-6 overflow-y-auto p-8">
       <h2 className="text-center text-lg font-medium text-foreground">
         {T('heading', 'Start vibe coding in {{value0}}', { value0: workspaceName })}
       </h2>

@@ -30,7 +30,7 @@ export const selectRuntimePaneTitlesForWorktree = createWorktreeRecordSelector<
   empty: EMPTY_RUNTIME_PANE_TITLES,
   build: (state, worktreeId) => {
     const out: Record<string, Record<number, string>> = {}
-    for (const tab of state.tabsByWorktree[worktreeId] ?? []) {
+    for (const tab of state.tabsByWorktree?.[worktreeId] ?? []) {
       const paneTitles = state.runtimePaneTitlesByTabId[tab.id]
       if (paneTitles) {
         out[tab.id] = paneTitles
@@ -48,8 +48,8 @@ export const selectLivePtyIdsForWorktree = createWorktreeRecordSelector<
   empty: EMPTY_LIVE_PTY_IDS,
   build: (state, worktreeId) => {
     const out: Record<string, string[]> = {}
-    for (const tab of state.tabsByWorktree[worktreeId] ?? []) {
-      const ids = state.ptyIdsByTabId[tab.id]
+    for (const tab of state.tabsByWorktree?.[worktreeId] ?? []) {
+      const ids = state.ptyIdsByTabId?.[tab.id]
       if (ids && ids.length > 0) {
         out[tab.id] = ids
       }
@@ -66,7 +66,7 @@ export const selectTerminalLayoutRootsForWorktree = createWorktreeRecordSelector
   empty: EMPTY_TERMINAL_LAYOUT_ROOTS,
   build: (state, worktreeId) => {
     const out: Record<string, TerminalPaneLayoutNode | null | undefined> = {}
-    for (const tab of state.tabsByWorktree[worktreeId] ?? []) {
+    for (const tab of state.tabsByWorktree?.[worktreeId] ?? []) {
       out[tab.id] = state.terminalLayoutsByTabId[tab.id]?.root
     }
     return out
@@ -79,7 +79,7 @@ export function selectTerminalLayoutRootsForWorktrees(
 ): Record<string, TerminalPaneLayoutNode | null | undefined> {
   const out: Record<string, TerminalPaneLayoutNode | null | undefined> = {}
   for (const worktreeId of worktreeIds) {
-    for (const tab of state.tabsByWorktree[worktreeId] ?? []) {
+    for (const tab of state.tabsByWorktree?.[worktreeId] ?? []) {
       out[tab.id] = state.terminalLayoutsByTabId[tab.id]?.root
     }
   }

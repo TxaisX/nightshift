@@ -1,7 +1,9 @@
 import { createPortal } from 'react-dom'
 import TerminalPane from './terminal-pane/TerminalPane'
+import { AgentPickerPane } from './agent-picker/AgentPickerPane'
 import { findActivityTerminalPortal } from './activity/activity-terminal-portal'
 import { shouldMountBackgroundWorktreeTab } from './terminal/background-terminal-worktree-mount'
+import { useAppStore } from '../store'
 import type { TerminalController } from './use-terminal-controller'
 
 export function TerminalLegacyTerminalPanes({
@@ -19,6 +21,7 @@ export function TerminalLegacyTerminalPanes({
     evictionExemptTerminalTabIds,
     handleCloseTab,
     handlePtyExit,
+    handleResolveAgentChoiceTab,
     measurableBackgroundWorktreeIdsRef,
     mountedWorktreeIdsRef,
     renderedActiveWorktreeId,
@@ -27,6 +30,9 @@ export function TerminalLegacyTerminalPanes({
     worktreeFiles,
     workspaceSurfaces
   } = controller
+  // Why: only the agent picker's heading needs a human-readable workspace
+  // name; every other tab-pane concern here works off worktree ids.
+  const worktreesByRepo = useAppStore((s) => s.worktreesByRepo)
   return (
     <div
       className={`relative flex-1 min-h-0 overflow-hidden ${
@@ -67,6 +73,23 @@ export function TerminalLegacyTerminalPanes({
                   )
                 )
                 .map((tab) => {
+                  if (tab.pendingAgentChoice) {
+                    // Why: no pty exists yet for this tab (see
+                    // TerminalTab.pendingAgentChoice), so render the BridgeMind-style
+                    // picker instead of TerminalPane, which would spawn one on mount.
+                    const workspaceName =
+                      Object.values(worktreesByRepo)
+                        .flat()
+                        .find((w) => w.id === workspace.id)?.displayName ?? workspace.path
+                    return (
+                      <AgentPickerPane
+                        key={tab.id}
+                        worktreeId={workspace.id}
+                        workspaceName={workspaceName}
+                        onPick={(pick) => handleResolveAgentChoiceTab(tab.id, workspace.id, pick)}
+                      />
+                    )
+                  }
                   const activityTerminalPortal = findActivityTerminalPortal(
                     activityTerminalPortals,
                     { worktreeId: workspace.id, tabId: tab.id }

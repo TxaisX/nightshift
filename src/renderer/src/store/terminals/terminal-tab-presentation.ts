@@ -23,6 +23,7 @@ export function createTerminalTabPresentationActions(
   | 'setGeneratedTabTitleFromAgentPrompt'
   | 'setGeneratedTabTitlesFromAgentPrompts'
   | 'clearTabLaunchAgent'
+  | 'resolveTabPendingAgentChoice'
   | 'setRuntimePaneTitle'
   | 'clearRuntimePaneTitle'
 > {
@@ -139,6 +140,25 @@ export function createTerminalTabPresentationActions(
         const nextTabs = [...tabs]
         nextTabs[tabIndex] = tabWithoutLaunchAgent
         scheduleRuntimeGraphSync()
+        return { tabsByWorktree: { ...s.tabsByWorktree, [ownerWorktreeId]: nextTabs } }
+      })
+    },
+    resolveTabPendingAgentChoice: (tabId) => {
+      set((s) => {
+        const ownerWorktreeId = getTerminalTabOwnerWorktreeId(s.tabsByWorktree, tabId)
+        if (!ownerWorktreeId) {
+          return s
+        }
+        const tabs = s.tabsByWorktree[ownerWorktreeId] ?? []
+        const tabIndex = tabs.findIndex((t) => t.id === tabId)
+        const currentTab = tabs[tabIndex]
+        if (!currentTab?.pendingAgentChoice) {
+          return s
+        }
+        const { pendingAgentChoice: _pendingAgentChoice, ...tabResolved } = currentTab
+        void _pendingAgentChoice
+        const nextTabs = [...tabs]
+        nextTabs[tabIndex] = tabResolved
         return { tabsByWorktree: { ...s.tabsByWorktree, [ownerWorktreeId]: nextTabs } }
       })
     },

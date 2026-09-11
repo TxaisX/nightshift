@@ -1,7 +1,7 @@
 import { Suspense, useMemo } from 'react'
 import { lazyWithRetry as lazy } from '@/lib/lazy-with-retry'
 import { useDroppable } from '@dnd-kit/core'
-import { Ellipsis, X } from 'lucide-react'
+import { Ellipsis, LayoutGrid, X } from 'lucide-react'
 import { useAppStore } from '../../store'
 import {
   DropdownMenu,
@@ -14,6 +14,7 @@ import TabBar from '../tab-bar/TabBar'
 
 import { TabBarQuickCommandsButton } from '../tab-bar/TabBarQuickCommandsButton'
 import { useTabGroupWorkspaceModel } from './useTabGroupWorkspaceModel'
+import { useTidyLayoutCommand } from './useTidyLayoutCommand'
 import { closeTerminalTab } from '../terminal/terminal-tab-actions'
 import { resolveGroupTabFromVisibleId } from './tab-group-visible-id'
 import { getTabPaneBodyDroppableId, type HoveredTabInsertion } from './useTabDragSplit'
@@ -64,6 +65,7 @@ export default function TabGroupPanel({
   const rightSidebarOpen = useAppStore((state) => state.rightSidebarOpen)
   const sidebarOpen = useAppStore((state) => state.sidebarOpen)
   const model = useTabGroupWorkspaceModel({ groupId, worktreeId })
+  const tidyLayoutCommand = useTidyLayoutCommand(worktreeId)
   const {
     activeTab,
     agentSessionItems,
@@ -294,6 +296,17 @@ export default function TabGroupPanel({
                       </DropdownMenuTrigger>
                     </TooltipTrigger>
                     <DropdownMenuContent align="end" side="bottom" sideOffset={4}>
+                      <DropdownMenuItem
+                        onSelect={() => {
+                          tidyLayoutCommand()
+                        }}
+                      >
+                        <LayoutGrid className="size-4" />
+                        {translate(
+                          'auto.components.tab.group.TabGroupPanel.tidyLayout',
+                          'Tidy panes'
+                        )}
+                      </DropdownMenuItem>
                       <DropdownMenuItem
                         variant="destructive"
                         onSelect={() => {

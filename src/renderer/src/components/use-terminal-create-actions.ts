@@ -19,6 +19,9 @@ import { translate } from '@/i18n/i18n'
 import { getActiveWorktreeRuntimeEnvironmentId } from './terminal-workspace-model'
 import type { TerminalColdActivationController } from './terminal-cold-activation'
 
+const T = (id: string, fallback: string, options?: Record<string, unknown>): string =>
+  translate(`auto.components.use-terminal-create-actions.${id}`, fallback, options)
+
 export function useTerminalCreateActions(controller: TerminalColdActivationController) {
   const {
     activeWorktreeId,
@@ -112,6 +115,57 @@ export function useTerminalCreateActions(controller: TerminalColdActivationContr
       }
     },
     [activeWorktreeId]
+  )
+
+  // Explicit "choose agent" entry point (item 4 of the BridgeMind-picker task):
+  // creates a tab in the pending-agent-choice state instead of changing what
+  // the plain `+` button (handleNewTab) does, so existing muscle memory and
+  // every existing caller keep today's immediate-spawn behavior.
+  // ponytail: paired web-runtime workspaces aren't special-cased here (unlike
+  // handleNewTab) — they get a pending tab too. Add a paired-host picker path
+  // if BridgeMind parity turns out to matter for those workspaces.
+  const handleNewAgentChoiceTab = useCallback(() => {
+    if (!activeWorktreeId) {
+      return
+    }
+    const state = useAppStore.getState()
+    const targetGroupId =
+      state.activeGroupIdByWorktree[activeWorktreeId] ??
+      state.groupsByWorktree[activeWorktreeId]?.[0]?.id
+    const newTab = createTab(activeWorktreeId, targetGroupId, undefined, {
+      pendingAgentChoice: true
+    })
+    setActiveTabType('terminal')
+    focusTerminalTabSurface(newTab.id)
+  }, [activeWorktreeId, createTab, setActiveTabType])
+
+  // Resolves a pending-agent-choice tab once the picker fires `onPick`. 'blank'
+  // just clears the flag in place so TerminalPane mounts and spawns the
+  // default shell like any other plain tab. An agent pick closes the
+  // placeholder and routes through the same launchAgentInNewTab funnel every
+  // other agent launch uses (ponytail: mints a fresh tab rather than reusing
+  // the placeholder's id — acceptable since it never held any scrollback).
+  const handleResolveAgentChoiceTab = useCallback(
+    (tabId: string, worktreeId: string, pick: TuiAgent | 'blank') => {
+      if (pick === 'blank') {
+        useAppStore.getState().resolveTabPendingAgentChoice(tabId)
+        return
+      }
+      useAppStore.getState().closeTab(tabId, { recordInteraction: false })
+      const result = launchAgentInNewTab({
+        agent: pick,
+        worktreeId,
+        launchSource: 'shortcut'
+      })
+      if (!result) {
+        toast.error(
+          T('agentChoiceLaunchFailed', 'Could not build launch command for {{value0}}.', {
+            value0: pick
+          })
+        )
+      }
+    },
+    []
   )
 
   const handleNewSimulatorTab = useCallback(() => {
@@ -227,6 +281,8 @@ export function useTerminalCreateActions(controller: TerminalColdActivationContr
   return {
     handleNewTab,
     handleNewAgentTab,
+    handleNewAgentChoiceTab,
+    handleResolveAgentChoiceTab,
     handleNewSimulatorTab,
     handleNewBrowserTab,
     handleOpenEntry,

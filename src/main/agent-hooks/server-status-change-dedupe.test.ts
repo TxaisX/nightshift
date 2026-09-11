@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { AgentHookServer, _internals } from './server'
 import { makePaneKey } from '../../shared/stable-pane-id'
+import { STATUS_NOTIFY_HEARTBEAT_MS } from './server/server-constants'
 
 const { getCohortAtEmitMock, trackMock } = vi.hoisted(() => ({
   getCohortAtEmitMock: vi.fn(),
@@ -60,5 +61,39 @@ describe('status-change listener dedupe (STA perf fix)', () => {
     server.ingestRemote(workingToolEvent, 'conn-target')
 
     expect(spy).toHaveBeenCalledTimes(1)
+  })
+
+  it('still notifies after the heartbeat interval so a long working run stays fresh', () => {
+    // Why this exists: listeners read `receivedAt`, and the keep-awake service treats a
+    // status older than 2h as stale. A long run stays 'working' the whole time, so a gate
+    // on state alone would freeze that timestamp and let the awake blocker expire mid-run.
+    vi.useFakeTimers()
+    try {
+      const server = new AgentHookServer()
+      const spy = vi.fn()
+      server.subscribeStatusChanges(spy)
+
+      const pane = makePaneKey('long-run-tab', leafId(1234))
+      const workingToolEvent = {
+        paneKey: pane,
+        worktreeId: 'wt-long-run',
+        hookEventName: 'PostToolUse',
+        payload: { state: 'working' as const, agentType: 'claude' as const, toolName: 'Bash' }
+      }
+
+      server.ingestRemote(workingToolEvent, 'conn-long-run')
+      spy.mockClear()
+
+      // Identical events inside the heartbeat window stay swallowed.
+      server.ingestRemote(workingToolEvent, 'conn-long-run')
+      expect(spy).toHaveBeenCalledTimes(0)
+
+      // Past the heartbeat, an identical event notifies again so `receivedAt` advances.
+      vi.advanceTimersByTime(STATUS_NOTIFY_HEARTBEAT_MS + 1_000)
+      server.ingestRemote(workingToolEvent, 'conn-long-run')
+      expect(spy).toHaveBeenCalledTimes(1)
+    } finally {
+      vi.useRealTimers()
+    }
   })
 })

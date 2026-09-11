@@ -27,3 +27,10 @@ export const CLOSED_AGENT_STATUS_TAB_IDS_MAX = 1024
 export const CLOSED_AGENT_STATUS_PANE_KEYS_MAX = 1024
 export const PANE_KEY_ALIASES_MAX = 1024
 export const RETIRED_PANE_FENCES_MAX = 1024
+
+/**
+ * How often a status snapshot is pushed to listeners even when nothing they read
+ * has changed. Well under AGENT_AWAKE_STATUS_STALE_AFTER_MS (2h) so a long
+ * unbroken 'working' run keeps refreshing the keep-awake blocker.
+ */
+export const STATUS_NOTIFY_HEARTBEAT_MS = 5 * 60 * 1000

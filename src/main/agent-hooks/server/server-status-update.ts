@@ -6,7 +6,10 @@ import {
   resolveAgentStatusIdentity,
   shouldSuppressInheritedTerminalStatus
 } from '../../../shared/agent-status-identity'
-import { INTERRUPTED_DONE_LATE_WORKING_SUPPRESSION_MS } from './server-constants'
+import {
+  INTERRUPTED_DONE_LATE_WORKING_SUPPRESSION_MS,
+  STATUS_NOTIFY_HEARTBEAT_MS
+} from './server-constants'
 import type { EnrichedAgentHookEventPayload } from './server-types'
 import type { AgentHookEventPayload } from '../../../shared/agent-hook-listener/listener-event'
 import type { AgentStatusObservationOrigin } from '../../../shared/agent-status-observation'
@@ -216,7 +219,16 @@ export abstract class AgentHookServerStatusUpdate extends AgentHookServerStatusA
       wasObservedInCurrentRuntime === isObservedInCurrentRuntime &&
       previous.providerSession?.id === enriched.providerSession?.id &&
       previous.providerSession?.transcriptPath === enriched.providerSession?.transcriptPath
-    if (!nothingListenerObservableChanged) {
+    // Why the heartbeat: listeners read `receivedAt`, and the keep-computer-awake
+    // service treats a status older than AGENT_AWAKE_STATUS_STALE_AFTER_MS (2h) as
+    // stale. A long agent run stays 'working' throughout, so gating on state alone
+    // would freeze the `receivedAt` listeners see at the first event of the run and
+    // let the awake blocker expire mid-task — exactly the overnight case this app
+    // exists for. Notifying at most once per interval keeps the timestamp fresh
+    // while still dropping the thousands of identical events in between.
+    const sinceLastNotify = enriched.receivedAt - this.lastStatusNotifyAtMs
+    if (!nothingListenerObservableChanged || sinceLastNotify >= STATUS_NOTIFY_HEARTBEAT_MS) {
+      this.lastStatusNotifyAtMs = enriched.receivedAt
       this.notifyStatusChangeListeners()
     }
     this.emitEnrichedStatus(enriched)

@@ -74,6 +74,8 @@ export abstract class AgentHookServerState {
   )
   // Why: hydrated rows give UI continuity but aren't evidence of live agent work in this runtime.
   protected runtimeObservedStatusPaneKeys = new Set<string>()
+  /** When listeners last received a snapshot, so a quiet pane cannot starve them. */
+  protected lastStatusNotifyAtMs = 0
   protected hydratedAuthorityCommitments: readonly AgentHookAuthorityEvidence[] = Object.freeze([])
   protected hydratedLaunchTokenHashByPaneKey = new Map<string, string>()
   protected persistedAuthorityCommitmentsByPaneKey = new Map<string, AgentHookAuthorityEvidence>()

@@ -146,6 +146,11 @@ export function useTabGroupCreationCommands({
     newTerminalTab: () => {
       void openNewTerminalTabInActiveWorkspace(groupId)
     },
+    // Why: opens a pane that shows the agent picker instead of spawning a shell,
+    // so nothing starts until the user chooses which agent should own the pane.
+    newAgentChoiceTab: () => {
+      void openNewTerminalTabInActiveWorkspace(groupId, { pendingAgentChoice: true })
+    },
     newTerminalWithShell: (shellOverride: string) => {
       void (async () => {
         const environmentId = getRuntimeEnvironmentIdForWorktree(useAppStore.getState(), worktreeId)

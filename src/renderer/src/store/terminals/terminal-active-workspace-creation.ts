@@ -11,7 +11,7 @@ export function createActiveWorkspaceTerminalActions(
   get: TerminalStoreGet
 ): Pick<TerminalSlice, 'openNewTerminalTabInActiveWorkspace'> {
   return {
-    openNewTerminalTabInActiveWorkspace: async (groupId) => {
+    openNewTerminalTabInActiveWorkspace: async (groupId, opts) => {
       const state = get()
       const worktreeId = state.activeWorktreeId
       if (!worktreeId) {
@@ -41,7 +41,14 @@ export function createActiveWorkspaceTerminalActions(
       if (isWebClientLocation() && worktreeId !== FLOATING_TERMINAL_WORKTREE_ID) {
         return
       }
-      const terminal = get().createTab(worktreeId, groupId)
+      // Why: a pending-choice tab deliberately has no pty yet — it renders the agent
+      // picker until the user picks, so nothing is spawned and nothing is focused.
+      const terminal = get().createTab(
+        worktreeId,
+        groupId,
+        undefined,
+        opts?.pendingAgentChoice ? { pendingAgentChoice: true } : undefined
+      )
       get().setActiveTab(terminal.id)
       get().setActiveTabType('terminal')
       const latest = get()
@@ -63,7 +70,9 @@ export function createActiveWorkspaceTerminalActions(
       }
       // Why: Cmd+J shares the titlebar-button creation path, so append the new terminal after mixed editor/browser tabs, not first.
       get().setTabBarOrder(worktreeId, [...base.filter((id) => id !== terminal.id), terminal.id])
-      focusTerminalTabSurface(terminal.id)
+      if (!opts?.pendingAgentChoice) {
+        focusTerminalTabSurface(terminal.id)
+      }
     }
   }
 }

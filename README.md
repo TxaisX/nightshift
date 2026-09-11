@@ -68,6 +68,39 @@ orchestration surface.
 - `NIGHTSHIFT_WORKSPACES_DIR` overrides where worktrees are created.
 - Keyboard shortcuts are user-owned in `~/.nightshift/keybindings.json`.
 
+### Shortcuts that ship unbound
+
+A number of commands deliberately ship with no key assigned, so they never steal
+a chord you already use. They are on menus and in the shortcut list, and you bind
+the ones you want. Among the most useful:
+
+| Command | What it does |
+| --- | --- |
+| Toggle Agent Dashboard | One view of every agent and what it is doing |
+| Toggle Workspace Board | The board view of your workspaces |
+| Equalize pane sizes | Evens up panes you have split inside a tab |
+| New agent tab | Opens a tab already running your default agent |
+| Toggle Quick Commands menu | The per-workspace command palette |
+| Open Tasks | The task list |
+
+Assign them in the shortcut list, or add them under the `platforms` block of
+`~/.nightshift/keybindings.json`, for example:
+
+```json
+{
+  "version": 1,
+  "platforms": {
+    "win32": {
+      "dashboard.toggle": ["Mod+Alt+D"],
+      "terminal.equalizePaneSizes": ["Mod+Shift+U"]
+    }
+  }
+}
+```
+
+`Mod` is Ctrl on Windows and Linux, Command on macOS. The app validates the file
+on load and reports conflicts rather than silently dropping a binding.
+
 ## License
 
 MIT. See [LICENSE](LICENSE).

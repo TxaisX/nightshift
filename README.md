@@ -112,6 +112,10 @@ every agent across every workspace, in three columns:
 | Working | Agents currently running |
 | Done | Agents that finished |
 
+Idle agents are hidden by default, so a quiet agent shows in no column and the
+count reads zero. Turn on **Show idle agents** in the dashboard's own settings
+menu to add a fourth column for them.
+
 Sub-agents nest under the session that spawned them, each row carries a status
 dot, and a filter narrows the board. The board can also start an agent, so it
 is a place to act from and not only to watch.

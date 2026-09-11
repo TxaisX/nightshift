@@ -1,3 +1,9 @@
+# Start here
+
+Read [`HANDOFF.md`](./HANDOFF.md) first. It carries the current state of the project, what
+was recently changed and why, what is verified versus assumed, and the traps that have
+already cost time. Update it when you finish a piece of work.
+
 # Design System
 
 All UI work — layout, color, typography, spacing, component selection, UX behavior — must follow [`docs/STYLEGUIDE.md`](./docs/STYLEGUIDE.md). Use the tokens defined in `src/renderer/src/assets/main.css` (the canonical source) and the shadcn primitives in `src/renderer/src/components/ui/`. Don't invent new color values, font sizes, or shadow tiers when a documented one already covers the role. When STYLEGUIDE.md is silent, follow the resolution order in its final section.

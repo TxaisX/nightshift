@@ -1,0 +1,129 @@
+# Handoff
+
+Read this before changing anything. It is the current state of the project and the
+context a fresh agent cannot infer from the code. Update it when you finish work.
+
+Last updated: 2026-09-10.
+
+## What this is
+
+Nightshift is an original Windows-first desktop app for running several AI coding-agent
+CLIs in parallel, each in its own git worktree, with terminals, an editor, a browser and
+diff review in one window.
+
+It began as a fork of another project and no longer is one. On 2026-09-10 the fork was
+severed: the rename machinery and the two-branch model were deleted, ~2,300 lines across
+383 files were de-branded, the GitHub repository was recreated so it carries no "forked
+from" banner, and history was squashed to a single root commit. `main` is now an ordinary
+hand-edited branch: edit it directly, and push to `origin` only. `main` is the sole branch
+on GitHub, and the `upstream` remote is gone.
+
+The local `base` and `archive/pre-original` branches still exist, but they are **archives of
+the old history, not part of the workflow**. Nothing is generated from them any more.
+
+**Do not reintroduce the old branding, and do not look for an upstream to sync from.**
+The former upstream's history survives only in local refs (`base`, `archive/pre-original`,
+tags `pre-original-*`) and a bundle under `G:\Dev\backups`. Nothing prunes those unless
+asked.
+
+`LICENSE` keeps its original copyright line. MIT requires that notice to travel with the
+code, so removing it would make every build infringing. It is not user-visible. Leave it.
+
+## Versioning
+
+The version is held at `0.0.0` deliberately, because the product is still being built.
+**Do not bump it.** The owner will say when to move to the next version.
+
+## Recent work, and why
+
+- **Agent picker.** A pane can now exist without spawning a shell. "Choose agent…" in the
+  `+` menu opens a pane whose whole body is a picker of the agent CLIs detected on this
+  machine; nothing starts until one is chosen. Verified end to end in a running app.
+- **Launch shapes.** The Launch agents dialog offers Solo, Pair, Workbench and Swarm. Each
+  session gets a distinct role prefixed to the shared prompt, and a lineup shows which
+  agent takes which role before anything is created. Previously every session received an
+  identical prompt and did identical work.
+- **Sidebar session badges.** Each workspace row shows how many sessions are live, hidden
+  entirely at zero. Per-session status dots already existed and were reused.
+- **Tidy.** A workspace holds two independent split trees: the tab-group tree, and the
+  panes inside each tab created by "Split Terminal Right". Tidy originally evened only the
+  first, which is the one users rarely split, so it appeared to do nothing. It now evens
+  both by broadcasting a window event that each tab responds to.
+- **Performance.** Every agent hook event used to rebuild a status snapshot for every open
+  pane. Agents emit these several times a second each, so this was thousands of short-lived
+  objects per second on the main thread. Listeners are now notified only when something
+  they read changes, with a five-minute heartbeat so a long run cannot starve the
+  keep-awake timer. Also: locale collators are built once per sort instead of once per
+  comparison, and a background service that served a removed UI no longer starts.
+
+## What is verified, and what is not
+
+Verified by driving the running app, not only by tests: the agent picker end to end, the
+sidebar session badge, the launch dialog lineup, and Tidy (pane widths went from
+312/312/636 to 418/418/423).
+
+Not verified at runtime: layout presets, and whether the agent dashboard populates under
+load.
+
+**Green tests are not enough here.** Three separate UI features passed tests, typecheck
+and lint while being broken: one never rendered, one silently created a plain terminal, and
+one was attached to the wrong data. Running the app found all three. Do the same.
+
+## Known gaps
+
+- **Layout presets** apply a grid to the tab-group tree only, so they are rarely
+  applicable. Tidy was fixed to cover both trees; presets were not.
+- **Orchestration has a command line but no control UI.** Runs, tasks, dispatch and
+  mailboxes exist in the CLI and are not exposed to the renderer at all. The agent
+  dashboard shows agents and nested sub-agents, but cannot create or route work.
+- **The agent dashboard is off by default** behind "Experimental agent dashboard popout".
+  Until that setting is on, its shortcut does nothing and its row is hidden in the shortcut
+  list, which reads as a broken key rather than a disabled feature.
+
+## Working here
+
+```
+pnpm install
+pnpm dev                 # development instance
+pnpm run build:win       # unsigned installer in dist/
+```
+
+- **Tests must pass `--config`:** `node_modules/.bin/vitest run --config config/vitest.config.ts <path>`.
+  Without it the `@/` alias fails to resolve and every suite errors at import.
+- **Some suites fail on this machine for environment reasons**, not because of your change:
+  symlink permission errors and a missing `/bin/sh`. Before claiming a regression, stash
+  your change and re-run to see whether the failure pre-dates it.
+- **Install from PowerShell, never Git Bash**, which rewrites `/S` into a path and drops the
+  installer into its interactive UI:
+  `Start-Process dist\nightshift-windows-setup.exe -ArgumentList '/S','/currentuser' -Wait`.
+  Close any editor window holding the repo or the install folder first; a lock makes the
+  silent update abort. `config/scripts/windows-who-locks.ps1 -Path <file>` names the holder.
+- **To drive the running app:** start it with `--remote-debugging-port=<port>` and connect
+  with playwright-core over the debugging protocol. Screenshots time out waiting on fonts;
+  read `document.body.innerText` instead. The native folder dialog cannot be automated, so
+  add a project with `window.api.repos.add({ path, kind: 'folder' })` from the page instead.
+- **Max 300 code lines per file**, enforced by lint. Add a sibling file rather than growing
+  one, and never disable the rule.
+- **Clean `out/` before packaging a release build.** `out/` is gitignored and never pruned, so
+  a file deleted from source survives there and electron-builder packages it. A stale
+  `fleet-workspaces-dir.js` from an earlier name shipped inside an installer this way.
+
+## Naming
+
+The project is Nightshift. It was briefly called Fleet during the rebrand, and that name is
+gone from source. Two things to know:
+
+- **`fleet` is also an ordinary word here**, meaning a group of agents, as in
+  `orchestration-fleet-projection.ts` and "fleet-wide freshness". Those are correct domain
+  vocabulary and predate the short-lived product name. Do not rename them.
+- The repository folder may still be `git-reposleet` on disk. That is only a local
+  directory name; nothing in the code depends on it.
+
+## Conventions worth knowing
+
+- Many commands ship with no keyboard shortcut on purpose, so they never claim a chord you
+  already use. That policy is pinned by a test. Bind them per user in
+  `~/.nightshift/keybindings.json`; do not change the shipped defaults to suit one person.
+- A few strings look like the old brand but are not: a real npm package, the unrelated GNOME
+  Orca screen reader at `/usr/bin/orca`, and a legacy process name used only to clean up
+  what older installs left behind. Leave all of them.

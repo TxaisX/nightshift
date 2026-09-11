@@ -147,6 +147,7 @@ export default function TabGroupPanel({
         }
       }}
       onNewTerminalTab={commands.newTerminalTab}
+      onNewAgentChoiceTab={commands.newAgentChoiceTab}
       onNewTerminalWithShell={commands.newTerminalWithShell}
       onNewBrowserTab={commands.newBrowserTab}
       onNewSimulatorTab={commands.newSimulatorTab}

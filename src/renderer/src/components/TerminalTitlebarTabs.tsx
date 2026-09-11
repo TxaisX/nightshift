@@ -40,6 +40,7 @@ export function TerminalTitlebarTabs({
     handleNewBrowserTab,
     handleNewFile,
     handleNewSimulatorTab,
+    handleNewAgentChoiceTab,
     handleNewTab,
     handleOpenEntry,
     handleTogglePaneExpand,
@@ -72,6 +73,7 @@ export function TerminalTitlebarTabs({
       onCloseToLeft={handleCloseTabsToLeft}
       onNewTerminalTab={() => handleNewTab()}
       onNewTerminalWithShell={handleNewTab}
+      onNewAgentChoiceTab={handleNewAgentChoiceTab}
       onNewBrowserTab={handleNewBrowserTab}
       onNewSimulatorTab={mobileEmulatorEnabled ? handleNewSimulatorTab : undefined}
       onOpenEntry={handleOpenEntry}

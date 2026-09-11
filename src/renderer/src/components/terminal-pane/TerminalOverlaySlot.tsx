@@ -6,6 +6,8 @@ import { SYNC_FIT_PANES_EVENT } from '@/constants/terminal'
 import { tabGroupBodyAnchorName } from '../tab-group/tab-group-body-anchor'
 import type { ActivityTerminalPortalTarget } from '../activity/activity-terminal-portal'
 import TerminalPane from './TerminalPane'
+import { AgentPickerPane } from '../agent-picker/AgentPickerPane'
+import { resolvePendingAgentChoice } from '@/lib/resolve-pending-agent-choice'
 import { closeTerminalTab } from '../terminal/terminal-tab-actions'
 import { shouldDeferParkedPtyExitTabClose } from './terminal-parked-tab-watchers'
 
@@ -63,6 +65,23 @@ export const TerminalOverlaySlot = memo(function TerminalOverlaySlot({
   consumeSuppressedPtyExit,
   leaveWorktreeIfEmpty
 }: TerminalOverlaySlotProps): React.JSX.Element {
+  // Why here and not inside TerminalPane: TerminalPane calls its controller hook
+  // unconditionally and that hook is what spawns the pty, so the choice has to be
+  // made before it mounts. Reading the flag as a selector keeps hook order stable.
+  const isPendingAgentChoice = useAppStore(
+    (state) =>
+      (state.tabsByWorktree?.[worktreeId] ?? []).find((tab) => tab.id === terminalTabId)
+        ?.pendingAgentChoice === true
+  )
+  const workspaceLabel = useAppStore((state) => {
+    for (const repoWorktrees of Object.values(state.worktreesByRepo ?? {})) {
+      const match = repoWorktrees.find((worktree) => worktree.id === worktreeId)
+      if (match) {
+        return match.displayName ?? match.path
+      }
+    }
+    return null
+  })
   const anchorName = groupId !== undefined ? tabGroupBodyAnchorName(groupId) : undefined
   const overlayRef = useRef<HTMLDivElement | null>(null)
   const [measuredFallbackRect, setMeasuredFallbackRect] = useState<MeasuredFallbackRect | null>(
@@ -215,6 +234,13 @@ export const TerminalOverlaySlot = memo(function TerminalOverlaySlot({
     }
   }, [groupId, onFocusOwningGroup])
 
+  const paneBody = isPendingAgentChoice ? (
+    <AgentPickerPane
+      worktreeId={worktreeId}
+      workspaceName={workspaceLabel ?? worktreePath}
+      onPick={(pick) => resolvePendingAgentChoice(terminalTabId, worktreeId, pick)}
+    />
+  ) : null
   const terminalPane = (
     <TerminalPane
       key={`${terminalTabId}-${terminalGeneration ?? 0}`}
@@ -260,7 +286,7 @@ export const TerminalOverlaySlot = memo(function TerminalOverlaySlot({
 
   if (activityTerminalPortal) {
     return createPortal(
-      terminalPane,
+      paneBody ?? terminalPane,
       activityTerminalPortal.target,
       `activity-terminal-${terminalTabId}`
     )
@@ -274,7 +300,7 @@ export const TerminalOverlaySlot = memo(function TerminalOverlaySlot({
       onPointerDown={focusGroup}
       onFocusCapture={focusGroup}
     >
-      {terminalPane}
+      {paneBody ?? terminalPane}
       {/* The chat/terminal toggle now lives in the pane header's action cluster
           (TerminalPaneHeaderOverlay), beside split/close — not as a separate
           floating overlay. */}

@@ -1,13 +1,7 @@
-let baseSensitivityCollator: Intl.Collator | undefined
-let numericCollator: Intl.Collator | undefined
-
-export function compareBaseSensitivityLocaleText(a: string, b: string): number {
-  // Why: stay lazy like localeCompare while resolving ICU options only once.
-  baseSensitivityCollator ??= new Intl.Collator(undefined, { sensitivity: 'base' })
-  return baseSensitivityCollator.compare(a, b)
-}
-
-export function compareNumericLocaleText(a: string, b: string): number {
-  numericCollator ??= new Intl.Collator(undefined, { numeric: true })
-  return numericCollator.compare(a, b)
-}
+// Why a re-export: main-process discovery scans need the same hoisted collators,
+// so the implementation moved to src/shared. Renderer callers keep this import
+// path, which is the one they already use.
+export {
+  compareBaseSensitivityLocaleText,
+  compareNumericLocaleText
+} from '../../../shared/locale-text-collators'

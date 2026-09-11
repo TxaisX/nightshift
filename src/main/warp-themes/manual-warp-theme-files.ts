@@ -2,6 +2,7 @@ import { createHash } from 'node:crypto'
 import path from 'node:path'
 import { BrowserWindow, dialog, type OpenDialogOptions, type WebContents } from 'electron'
 import type { WarpThemeImportSkippedFile } from '../../shared/terminal-custom-themes'
+import { compareBaseSensitivityLocaleText } from '../../shared/locale-text-collators'
 import {
   compareThemeFileLabels,
   isYamlFile,
@@ -23,7 +24,7 @@ export function createManualWarpThemeFileCandidates(filePaths: string[]): ThemeF
       }
       // Why: manual dialogs can return selections in click order. Sort only in
       // main so duplicate basenames get deterministic IDs without persisting paths.
-      return left.path.localeCompare(right.path, undefined, { sensitivity: 'base' })
+      return compareBaseSensitivityLocaleText(left.path, right.path)
     })
 }
 

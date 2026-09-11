@@ -2,6 +2,7 @@ import { open, realpath, stat } from 'node:fs/promises'
 import { homedir } from 'node:os'
 import { basename, dirname, relative, sep } from 'node:path'
 import { summarizeSkillMarkdown } from '../../shared/skill-metadata'
+import { compareBaseSensitivityLocaleText } from '../../shared/locale-text-collators'
 import type { Repo } from '../../shared/repo-types'
 import type {
   DiscoveredSkill,
@@ -309,9 +310,7 @@ export async function discoverSkills(args: {
   }
   return {
     skills,
-    sources: sources.sort((a, b) =>
-      a.label.localeCompare(b.label, undefined, { sensitivity: 'base' })
-    ),
+    sources: sources.sort((a, b) => compareBaseSensitivityLocaleText(a.label, b.label)),
     scannedAt: Date.now()
   }
 }

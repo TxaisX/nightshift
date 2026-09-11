@@ -2,6 +2,7 @@ import { readdirSync } from 'node:fs'
 import type { Dirent } from 'node:fs'
 import { homedir, platform } from 'node:os'
 import path from 'node:path'
+import { compareBaseSensitivityLocaleText } from '../../shared/locale-text-collators'
 
 const WARP_CHANNELS = [
   { macName: '.warp', linuxName: 'warp-terminal', windowsName: 'Warp' },
@@ -19,7 +20,7 @@ const WARP_CHANNELS = [
 function readDirectoryEntries(directoryPath: string): Dirent[] {
   try {
     return readdirSync(directoryPath, { withFileTypes: true }).sort((left, right) =>
-      left.name.localeCompare(right.name, undefined, { sensitivity: 'base' })
+      compareBaseSensitivityLocaleText(left.name, right.name)
     )
   } catch {
     return []

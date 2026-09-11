@@ -1,5 +1,6 @@
 import { posix as pathPosix } from 'node:path'
 import { summarizeSkillMarkdown } from '../../shared/skill-metadata'
+import { compareBaseSensitivityLocaleText } from '../../shared/locale-text-collators'
 import type {
   DiscoveredSkill,
   SkillDiscoveryResult,
@@ -163,9 +164,7 @@ export function parseWslSkillDiscoveryOutput(
   })
   return {
     skills: [...skillsByCanonicalPath.values()].sort(compareSkills),
-    sources: sources.sort((a, b) =>
-      a.label.localeCompare(b.label, undefined, { sensitivity: 'base' })
-    ),
+    sources: sources.sort((a, b) => compareBaseSensitivityLocaleText(a.label, b.label)),
     scannedAt
   }
 }

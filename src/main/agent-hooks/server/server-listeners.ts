@@ -157,15 +157,20 @@ export abstract class AgentHookServerListeners extends AgentHookServerState {
     )
   }
 
-  protected buildStatusChangeNotification(): {
+  /** @param want defaults both true — the public getters below need the full pair. */
+  protected buildStatusChangeNotification(
+    want: { statuses?: boolean; providerSessions?: boolean } = {}
+  ): {
     statuses: AgentHookStatusChangeEntry[]
     providerSessions: AgentHookProviderSessionIdentity[]
   } {
+    const wantStatuses = want.statuses ?? true
+    const wantProviderSessions = want.providerSessions ?? true
     const statuses: AgentHookStatusChangeEntry[] = []
     const providerSessions: AgentHookProviderSessionIdentity[] = []
     for (const [paneKey, entry] of this.state.lastStatusByPaneKey) {
       const enriched = entry as EnrichedAgentHookEventPayload
-      if (enriched.providerSession) {
+      if (wantProviderSessions && enriched.providerSession) {
         providerSessions.push({
           paneKey,
           sessionId: enriched.providerSession.id,
@@ -175,7 +180,7 @@ export abstract class AgentHookServerListeners extends AgentHookServerState {
           ...(enriched.worktreeId ? { worktreeId: enriched.worktreeId } : {})
         })
       }
-      if (!enriched.providerSessionOnly) {
+      if (wantStatuses && !enriched.providerSessionOnly) {
         statuses.push({
           state: enriched.payload.state,
           receivedAt: enriched.receivedAt,
@@ -187,10 +192,17 @@ export abstract class AgentHookServerListeners extends AgentHookServerState {
   }
 
   protected notifyStatusChangeListeners(): void {
-    if (this.statusChangeListeners.size === 0 && this.providerSessionChangeListeners.size === 0) {
+    const wantStatuses = this.statusChangeListeners.size > 0
+    const wantProviderSessions = this.providerSessionChangeListeners.size > 0
+    if (!wantStatuses && !wantProviderSessions) {
       return
     }
-    const { statuses, providerSessions } = this.buildStatusChangeNotification()
+    // Why: each listener set only reads its own snapshot array; building the other one too
+    // is a wasted per-pane allocation whenever only one of the two listener sets is populated.
+    const { statuses, providerSessions } = this.buildStatusChangeNotification({
+      statuses: wantStatuses,
+      providerSessions: wantProviderSessions
+    })
     for (const listener of this.statusChangeListeners) {
       try {
         listener(statuses)

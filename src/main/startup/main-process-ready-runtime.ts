@@ -2,7 +2,6 @@ import { app, nativeTheme } from 'electron'
 import { randomUUID } from 'node:crypto'
 import { performance } from 'node:perf_hooks'
 import { is } from '@electron-toolkit/utils'
-import { StarNagService } from '../star-nag/service'
 import { AgentBrowserBridge } from '../browser/agent-browser-bridge'
 import { EmulatorBridge } from '../emulator/emulator-bridge'
 import { RpcDispatcher } from '../runtime/rpc/dispatcher'
@@ -49,9 +48,10 @@ export async function initializeReadyRuntimeServices(): Promise<void> {
   initializeMainProcessAutomations()
   configureRuntimeServices(runtime)
   await initializeMainProcessPlugins(runtime)
-  state.starNag = new StarNagService(store, state.stats!)
-  state.starNag.start()
-  state.starNag.registerIpcHandlers()
+  // Why: the star-nag prompt has no renderer surface in this product — its card,
+  // toast host and value-moment observer are all unmounted. Constructing the
+  // service anyway subscribed to every agent spawn to do threshold bookkeeping
+  // for a prompt that can never be shown, so it is no longer started.
   state.agentBrowserBridge = new AgentBrowserBridge(browserManager, {
     onTabsChanged: (worktreeId) => runtime.notifyMobileSessionTabsChanged(worktreeId)
   })

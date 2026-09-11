@@ -191,6 +191,7 @@ export abstract class AgentHookServerStatusUpdate extends AgentHookServerStatusA
         enriched.payload.turnCompletedAt
       )
     }
+    const wasObservedInCurrentRuntime = this.runtimeObservedStatusPaneKeys.has(enriched.paneKey)
     // Why: an identity-matched event can still leave the aggregate backed only by another restored child; keep liveness reconciliation eligible.
     if (enriched.restoredUnconfirmed) {
       this.runtimeObservedStatusPaneKeys.delete(enriched.paneKey)
@@ -199,7 +200,25 @@ export abstract class AgentHookServerStatusUpdate extends AgentHookServerStatusA
     }
     this.state.lastStatusByPaneKey.set(enriched.paneKey, enriched)
     this.scheduleStatusPersist()
-    this.notifyStatusChangeListeners()
+    // Why: notifyStatusChangeListeners() walks every pane and allocates a fresh snapshot object per
+    // pane on every hook event, even for panes nothing here touched. With many worktrees emitting
+    // several hook events/sec each, that is thousands of short-lived allocations/sec on the main
+    // thread for events that changed nothing a listener reads. Skip it only when every field the two
+    // listener sets actually consume (state, provider-session identity, providerSessionOnly, and this
+    // pane's runtimeObservedStatusPaneKeys membership) is unchanged from the cached previous entry —
+    // `receivedAt` is deliberately excluded since it changes on every event by construction. A dropped
+    // update is worse than a wasted allocation, so any other divergence still notifies.
+    const isObservedInCurrentRuntime = this.runtimeObservedStatusPaneKeys.has(enriched.paneKey)
+    const nothingListenerObservableChanged =
+      previous !== undefined &&
+      previous.payload.state === enriched.payload.state &&
+      previous.providerSessionOnly === enriched.providerSessionOnly &&
+      wasObservedInCurrentRuntime === isObservedInCurrentRuntime &&
+      previous.providerSession?.id === enriched.providerSession?.id &&
+      previous.providerSession?.transcriptPath === enriched.providerSession?.transcriptPath
+    if (!nothingListenerObservableChanged) {
+      this.notifyStatusChangeListeners()
+    }
     this.emitEnrichedStatus(enriched)
     return enriched
   }

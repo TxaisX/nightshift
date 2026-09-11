@@ -270,7 +270,22 @@ export const KEYBINDING_DEFINITION_CORE_3: readonly KeybindingDefinition[] = [
     title: 'Equalize pane sizes',
     group: 'Terminal Panes',
     scope: 'terminal',
-    searchKeywords: ['shortcut', 'pane', 'split', 'equalize', 'resize', 'balance', 'size'],
+    // Why 'tidy': competitors name this command Tidy, so searching the shortcut
+    // list for that word should find it rather than coming up empty.
+    searchKeywords: [
+      'shortcut',
+      'pane',
+      'split',
+      'equalize',
+      'resize',
+      'balance',
+      'size',
+      'tidy',
+      'even'
+    ],
+    // Ships unbound by policy, like the other assign-it-yourself actions pinned in
+    // keybindings-unassigned-actions.test.ts. The keywords above are what make it
+    // findable in the shortcut list so a user can bind it.
     defaultBindings: platformBindings([])
   },
   {

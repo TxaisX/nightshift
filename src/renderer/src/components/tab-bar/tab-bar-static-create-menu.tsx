@@ -1,5 +1,5 @@
 import React from 'react'
-import { FilePlus, FileText, Globe, Smartphone, TerminalSquare } from 'lucide-react'
+import { Bot, FilePlus, FileText, Globe, Smartphone, TerminalSquare } from 'lucide-react'
 import { translate } from '@/i18n/i18n'
 import { DropdownMenuItem, DropdownMenuShortcut } from '@/components/ui/dropdown-menu'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
@@ -12,6 +12,9 @@ import {
 } from './use-tab-bar-runtime-model'
 import type { TabBarProps } from './tab-bar-props'
 import { resolveWindowsShellLaunchTarget } from './windows-shell-launch'
+
+const T = (id: string, fallback: string): string =>
+  translate(`auto.components.tab-bar.tab-bar-static-create-menu.${id}`, fallback)
 
 export function renderTabBarStaticCreateMenu({
   terminalOnly,
@@ -55,6 +58,7 @@ export function renderTabBarStaticCreateMenu({
     onNewTerminalTab,
     onNewTerminalWithShell,
     onNewBrowserTab,
+    onNewAgentChoiceTab,
     onNewSimulatorTab,
     onNewFileTab,
     onOpenFileTab
@@ -101,6 +105,18 @@ export function renderTabBarStaticCreateMenu({
         <DropdownMenuShortcut>{newTerminalShortcut}</DropdownMenuShortcut>
       </DropdownMenuItem>
     )
+  const newAgentChoiceMenuItem = onNewAgentChoiceTab ? (
+    <DropdownMenuItem
+      onSelect={() => {
+        queueNewActiveTerminalFocusAfterNewTabMenuClose()
+        onNewAgentChoiceTab()
+      }}
+      className="gap-2 rounded-[7px] px-2 py-1.5 text-[12px] leading-5 font-medium"
+    >
+      <Bot className="size-4 text-muted-foreground" />
+      {T('choose-agent', 'Choose agent...')}
+    </DropdownMenuItem>
+  ) : null
   const newBrowserMenuItem =
     !terminalOnly && managedBrowserCreationEnabled ? (
       <DropdownMenuItem
@@ -183,6 +199,7 @@ export function renderTabBarStaticCreateMenu({
       {newMarkdownMenuItem}
       {openMarkdownMenuItem}
       {defaultTerminalMenuItems}
+      {newAgentChoiceMenuItem}
       {newBrowserMenuItem}
       {newSimulatorMenuItem}
       {mobileEmulatorIntroMenuBlock}
@@ -190,6 +207,7 @@ export function renderTabBarStaticCreateMenu({
   ) : (
     <>
       {defaultTerminalMenuItems}
+      {newAgentChoiceMenuItem}
       {newBrowserMenuItem}
       {newMarkdownMenuItem}
       {openMarkdownMenuItem}

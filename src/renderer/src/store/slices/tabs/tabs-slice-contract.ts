@@ -145,6 +145,8 @@ export type TabsSlice = {
   ) => Tab | null
   mergeGroupIntoSibling: (worktreeId: string, groupId: string) => string | null
   setTabGroupSplitRatio: (worktreeId: string, nodePath: string, ratio: number) => void
+  /** Replaces a worktree's whole layout tree — for layout presets that restructure splits, not just resize them. */
+  setTabGroupLayout: (worktreeId: string, node: TabGroupLayoutNode) => void
   reconcileWorktreeTabModel: (worktreeId: string) => {
     renderableTabCount: number
     activeRenderableTabId: string | null

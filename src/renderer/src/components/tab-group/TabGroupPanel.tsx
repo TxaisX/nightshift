@@ -15,6 +15,7 @@ import TabBar from '../tab-bar/TabBar'
 import { TabBarQuickCommandsButton } from '../tab-bar/TabBarQuickCommandsButton'
 import { useTabGroupWorkspaceModel } from './useTabGroupWorkspaceModel'
 import { useTidyLayoutCommand } from './useTidyLayoutCommand'
+import LayoutPresetsMenu from './LayoutPresetsMenu'
 import { closeTerminalTab } from '../terminal/terminal-tab-actions'
 import { resolveGroupTabFromVisibleId } from './tab-group-visible-id'
 import { getTabPaneBodyDroppableId, type HoveredTabInsertion } from './useTabDragSplit'
@@ -307,6 +308,7 @@ export default function TabGroupPanel({
                           'Tidy panes'
                         )}
                       </DropdownMenuItem>
+                      <LayoutPresetsMenu worktreeId={worktreeId} />
                       <DropdownMenuItem
                         variant="destructive"
                         onSelect={() => {

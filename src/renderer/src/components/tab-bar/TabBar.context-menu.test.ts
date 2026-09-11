@@ -544,6 +544,26 @@ describe('TabBar context menu wiring', () => {
     expect(tooltip).toBeTruthy()
   })
 
+  it('renders the agent-picker "+" entry only when onNewAgentChoiceTab is passed, and invokes it', async () => {
+    const withoutCallback = await renderTabBar({ tabs: [TERMINAL_TAB] })
+    const labelsWithout = findChildrenByType(withoutCallback, 'DropdownMenuItem').map((item) =>
+      extractText(item.props.children)
+    )
+    expect(labelsWithout.some((label) => label.includes('Choose agent'))).toBe(false)
+
+    const onNewAgentChoiceTab = vi.fn()
+    const element = await renderTabBar({ tabs: [TERMINAL_TAB], onNewAgentChoiceTab })
+    const agentChoiceItem = findChildrenByType(element, 'DropdownMenuItem').find((item) =>
+      extractText(item.props.children).includes('Choose agent')
+    )
+    expect(agentChoiceItem).toBeTruthy()
+    if (!agentChoiceItem) {
+      throw new Error('Choose agent... menu item not rendered')
+    }
+    ;(agentChoiceItem.props.onSelect as () => void)()
+    expect(onNewAgentChoiceTab).toHaveBeenCalledTimes(1)
+  })
+
   it('cancels delayed menu focus when the tab bar root unmounts', async () => {
     vi.useFakeTimers()
     Object.assign(window, { setTimeout, clearTimeout })

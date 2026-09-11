@@ -22,6 +22,8 @@ export type TabBarProps = {
   onNewTerminalWithShell?: (shell: string) => void
   onNewBrowserTab: () => void
   onNewSimulatorTab?: () => void
+  /** Opens a pending tab whose body is the agent picker (BridgeMind-style "+" entry); nothing spawns until a pick. */
+  onNewAgentChoiceTab?: () => void
   onOpenEntry?: (args: TabCreateEntryArgs) => Promise<void>
   terminalOnly?: boolean
   showAgentLaunchItems?: boolean

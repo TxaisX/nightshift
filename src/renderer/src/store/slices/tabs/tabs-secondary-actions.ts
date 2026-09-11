@@ -2,11 +2,15 @@ import type { TabGroupLayoutNode } from '../../../../../shared/tab-types'
 import type { TabsSlice, TabsSliceGet, TabsSliceSet } from './tabs-slice-contract'
 import { findGroupAndWorktree, findTabAndWorktree } from '../tab-group-state'
 import { findSiblingGroupId, updateSplitRatio } from './tabs-layout'
+import { collectLeafGroupIds } from '../../../components/pane-layout/tidy-layout'
 
 export function createTabsSecondaryActions(
   set: TabsSliceSet,
   get: TabsSliceGet
-): Pick<TabsSlice, 'copyUnifiedTabToGroup' | 'mergeGroupIntoSibling' | 'setTabGroupSplitRatio'> {
+): Pick<
+  TabsSlice,
+  'copyUnifiedTabToGroup' | 'mergeGroupIntoSibling' | 'setTabGroupSplitRatio' | 'setTabGroupLayout'
+> {
   return {
     copyUnifiedTabToGroup: (tabId, targetGroupId, init) => {
       const foundTab = findTabAndWorktree(get().unifiedTabsByWorktree, tabId)
@@ -86,6 +90,36 @@ export function createTabsSecondaryActions(
               nodePath.length > 0 ? nodePath.split('.') : [],
               ratio
             )
+          }
+        }
+      })
+    },
+
+    setTabGroupLayout: (worktreeId, node) => {
+      set((state) => {
+        const currentLayout = state.layoutByWorktree[worktreeId]
+        if (!currentLayout) {
+          return state
+        }
+        // Why: a preset restructures splits, but must never invent or drop a
+        // leaf — reject a mismatched replacement rather than corrupt panes.
+        const currentLeafIds = collectLeafGroupIds(currentLayout)
+        const nextLeafIds = collectLeafGroupIds(node)
+        if (
+          currentLeafIds.length !== nextLeafIds.length ||
+          currentLeafIds.some((id, index) => id !== nextLeafIds[index])
+        ) {
+          return state
+        }
+        // Why: an unchanged layout must not mint fresh root state — every store
+        // subscriber wakes on the new reference (STA-3328).
+        if (JSON.stringify(currentLayout) === JSON.stringify(node)) {
+          return state
+        }
+        return {
+          layoutByWorktree: {
+            ...state.layoutByWorktree,
+            [worktreeId]: node
           }
         }
       })

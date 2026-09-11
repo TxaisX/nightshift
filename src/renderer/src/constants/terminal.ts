@@ -27,6 +27,14 @@ export const WAKE_HIBERNATED_AGENTS_WORKTREE_EVENT = 'nightshift-wake-hibernated
 // Continuous drags (sidebar-width drag, tab-group split drag) use the
 // per-pane ResizeObserver path instead.
 export const SYNC_FIT_PANES_EVENT = 'nightshift-sync-fit-panes'
+/**
+ * Ask every mounted terminal pane to even out its own split sizes.
+ *
+ * Why an event: each tab owns its PaneManager privately, so there is no registry a
+ * menu command could walk. This mirrors SYNC_FIT_PANES_EVENT, which fans out the
+ * same way for refits.
+ */
+export const EQUALIZE_PANES_EVENT = 'nightshift-equalize-panes'
 
 export type FocusTerminalPaneDetail = {
   tabId: string

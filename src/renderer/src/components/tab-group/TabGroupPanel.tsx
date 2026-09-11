@@ -277,7 +277,10 @@ export default function TabGroupPanel({
               {isFocused ? (
                 <TabBarQuickCommandsButton worktreeId={worktreeId} groupId={groupId} />
               ) : null}
-              {isFocused && hasSplitGroups ? (
+              {/* Why only isFocused: Tidy and the presets apply to the panes inside a
+                  tab too, which exist with or without split groups. Closing a group
+                  still needs one, so that item keeps the stricter gate below. */}
+              {isFocused ? (
                 <Tooltip>
                   <DropdownMenu modal={false}>
                     <TooltipTrigger asChild>
@@ -310,18 +313,20 @@ export default function TabGroupPanel({
                         )}
                       </DropdownMenuItem>
                       <LayoutPresetsMenu worktreeId={worktreeId} />
-                      <DropdownMenuItem
-                        variant="destructive"
-                        onSelect={() => {
-                          commands.closeGroup()
-                        }}
-                      >
-                        <X className="size-4" />
-                        {translate(
-                          'auto.components.tab.group.TabGroupPanel.closePaneColumn',
-                          'Close split pane'
-                        )}
-                      </DropdownMenuItem>
+                      {hasSplitGroups ? (
+                        <DropdownMenuItem
+                          variant="destructive"
+                          onSelect={() => {
+                            commands.closeGroup()
+                          }}
+                        >
+                          <X className="size-4" />
+                          {translate(
+                            'auto.components.tab.group.TabGroupPanel.closePaneColumn',
+                            'Close split pane'
+                          )}
+                        </DropdownMenuItem>
+                      ) : null}
                     </DropdownMenuContent>
                   </DropdownMenu>
                   <TooltipContent side="bottom" sideOffset={6}>

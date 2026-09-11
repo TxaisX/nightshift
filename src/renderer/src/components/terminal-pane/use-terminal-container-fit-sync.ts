@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { SYNC_FIT_PANES_EVENT } from '@/constants/terminal'
 import type { PaneManager } from '@/lib/pane-manager/pane-manager'
 import { fitPanes } from './pane-helpers'
+import { useTerminalEqualizeSync } from './use-terminal-equalize-sync'
 
 type UseTerminalContainerFitSyncArgs = {
   isVisible: boolean
@@ -16,6 +17,10 @@ export function useTerminalContainerFitSync({
   managerRef,
   containerRef
 }: UseTerminalContainerFitSyncArgs): void {
+  // Why here: this hook already owns the window-event listeners that keep this tab's
+  // panes correctly sized, and equalizing on request is the same concern over the
+  // same managerRef. Its caller sits on the 300-line budget, so it gains no line.
+  useTerminalEqualizeSync(managerRef)
   // Why: sidebar open/close toggles dispatch SYNC_FIT_PANES_EVENT from a
   // useLayoutEffect (pre-paint, same frame as the width change) so the
   // terminal fits synchronously with the new container size, eliminating the

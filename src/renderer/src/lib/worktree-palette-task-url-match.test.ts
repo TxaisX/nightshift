@@ -69,7 +69,7 @@ describe('parseCmdJTaskSourceUrl', () => {
     expect(parseCmdJTaskSourceUrl('https://github.com/TxaisX/nightshift/issues/14198')).toEqual({
       provider: 'github',
       link: {
-        slug: { owner: 'txais', repo: 'nightshift', host: 'github.com' },
+        slug: { owner: 'TxaisX', repo: 'nightshift', host: 'github.com' },
         type: 'issue',
         number: 14198
       }
@@ -77,7 +77,7 @@ describe('parseCmdJTaskSourceUrl', () => {
     expect(parseCmdJTaskSourceUrl('https://github.com/TxaisX/nightshift/pull/12789')).toEqual({
       provider: 'github',
       link: {
-        slug: { owner: 'txais', repo: 'nightshift', host: 'github.com' },
+        slug: { owner: 'TxaisX', repo: 'nightshift', host: 'github.com' },
         type: 'pr',
         number: 12789
       }

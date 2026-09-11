@@ -473,7 +473,7 @@ describe('repo RPC methods', () => {
       updateRepo: vi.fn().mockResolvedValue({
         id: 'repo-1',
         path: '/srv/repo',
-        upstream: { owner: 'txais', repo: 'nightshift' }
+        upstream: { owner: 'TxaisX', repo: 'nightshift' }
       })
     } as unknown as NightshiftRuntimeService
     const dispatcher = new RpcDispatcher({ runtime, methods: REPO_METHODS })
@@ -481,16 +481,16 @@ describe('repo RPC methods', () => {
     const response = await dispatcher.dispatch(
       makeRequest('repo.update', {
         repo: 'repo-1',
-        updates: { upstream: { owner: 'txais', repo: 'nightshift' } }
+        updates: { upstream: { owner: 'TxaisX', repo: 'nightshift' } }
       })
     )
 
     expect(runtime.updateRepo).toHaveBeenCalledWith('repo-1', {
-      upstream: { owner: 'txais', repo: 'nightshift' }
+      upstream: { owner: 'TxaisX', repo: 'nightshift' }
     })
     expect(response).toMatchObject({
       ok: true,
-      result: { repo: { id: 'repo-1', upstream: { owner: 'txais', repo: 'nightshift' } } }
+      result: { repo: { id: 'repo-1', upstream: { owner: 'TxaisX', repo: 'nightshift' } } }
     })
   })
 

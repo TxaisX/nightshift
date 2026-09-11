@@ -507,7 +507,7 @@ describe('GitHandler', () => {
       await expect(
         dispatcher.callRequest(
           'git.forkSync',
-          { worktreePath: tmpDir, expectedUpstream: { owner: 'txais', repo: 'nightshift' } },
+          { worktreePath: tmpDir, expectedUpstream: { owner: 'TxaisX', repo: 'nightshift' } },
           { isStale: () => false, signal: controller.signal }
         )
       ).rejects.toThrow(/abort/i)

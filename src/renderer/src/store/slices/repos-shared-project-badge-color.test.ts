@@ -19,7 +19,7 @@ const localRepo: Repo = {
   path: '/local/nightshift',
   displayName: 'nightshift',
   badgeColor: LOCAL_GREEN,
-  upstream: { owner: 'txais', repo: 'nightshift' },
+  upstream: { owner: 'TxaisX', repo: 'nightshift' },
   addedAt: 1
 }
 
@@ -28,7 +28,7 @@ const remoteRepo: Repo = {
   path: '/srv/nightshift',
   displayName: 'nightshift',
   badgeColor: REMOTE_NEUTRAL,
-  upstream: { owner: 'txais', repo: 'nightshift' },
+  upstream: { owner: 'TxaisX', repo: 'nightshift' },
   addedAt: 1
 }
 

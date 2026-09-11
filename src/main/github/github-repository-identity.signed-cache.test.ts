@@ -48,7 +48,7 @@ describe('owner/repo identity cache', () => {
   it('holds a signed identity past the unsigned TTL instead of re-spawning git', async () => {
     vi.useFakeTimers()
     await expect(getOwnerRepoForRemote(REPO, 'origin')).resolves.toEqual({
-      owner: 'txais',
+      owner: 'TxaisX',
       repo: 'nightshift'
     })
     expect(remoteGetUrlCalls()).toBe(1)
@@ -56,7 +56,7 @@ describe('owner/repo identity cache', () => {
     // Past the unsigned TTL, inside the signed TTL.
     vi.setSystemTime(Date.now() + FOUR_MINUTES)
     await expect(getOwnerRepoForRemote(REPO, 'origin')).resolves.toEqual({
-      owner: 'txais',
+      owner: 'TxaisX',
       repo: 'nightshift'
     })
     expect(remoteGetUrlCalls()).toBe(1)
@@ -99,7 +99,7 @@ describe('owner/repo identity cache', () => {
       getOwnerRepoForRemote(REPO, 'origin'),
       getOwnerRepoForRemote(REPO, 'origin')
     ])
-    expect(first).toEqual({ owner: 'txais', repo: 'nightshift' })
+    expect(first).toEqual({ owner: 'TxaisX', repo: 'nightshift' })
     expect(second).toEqual(first)
     expect(remoteGetUrlCalls()).toBe(1)
   })

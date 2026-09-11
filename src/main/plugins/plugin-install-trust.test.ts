@@ -63,7 +63,7 @@ describe('plugin install trust', () => {
   it('rejects locally installed reserved identities before publication', async () => {
     const sourcePath = await tempRoot('nightshift-reserved-plugin-')
     const pluginsDir = await tempRoot('nightshift-plugin-installs-')
-    await writePlugin(sourcePath, 'txais', 'nightshift-skills')
+    await writePlugin(sourcePath, 'TxaisX', 'nightshift-skills')
 
     await expect(
       installPluginFromLocalPath({ pluginsDir, sourcePath, hostVersion: '1.4.0' })
@@ -78,7 +78,7 @@ describe('plugin install trust', () => {
   it('allows the app-bundled path only for the complete official identity', async () => {
     const sourcePath = await tempRoot('nightshift-bundled-plugin-')
     const pluginsDir = await tempRoot('nightshift-plugin-installs-')
-    await writePlugin(sourcePath, 'txais', 'nightshift-skills')
+    await writePlugin(sourcePath, 'TxaisX', 'nightshift-skills')
 
     const result = await installBundledPlugin({
       pluginsDir,

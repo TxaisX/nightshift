@@ -1,82 +1,52 @@
-import { execFileSync } from 'node:child_process'
 import { randomUUID } from 'node:crypto'
-import { chmodSync, existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
-import os from 'node:os'
+import { rmSync } from 'node:fs'
 import path from 'node:path'
-import type { Page } from '@stablyai/playwright-test'
 import { test as base, expect } from './helpers/nightshift-app'
-import { ensureTerminalVisible, waitForSessionReady } from './helpers/store'
-import { waitForActivePanePtyId, waitForActiveTerminalManager } from './helpers/terminal'
+import { waitForSessionReady } from './helpers/store'
+import { waitForActivePanePtyId } from './helpers/terminal'
 import {
   clearTerminalPtyWriteLog,
-  installTerminalPtyWriteSpy,
-  readTerminalPtyWriteEntries
+  installTerminalPtyWriteSpy
 } from './helpers/terminal-pty-write-spy'
 import { RuntimeClient } from '../../src/cli/runtime-client'
 import type {
   RuntimeStatus,
   RuntimeTerminalCreate,
-  RuntimeTerminalListResult,
-  RuntimeTerminalRead,
   RuntimeTerminalSummary,
   RuntimeWorktreeCreateResult
 } from '../../src/shared/runtime-types'
-import { PROTOCOL_VERSION } from '../../src/main/daemon/types'
 import { makePaneKey } from '../../src/shared/stable-pane-id'
+import { FAKE_AGENT_WINDOWS_SHELL } from './helpers/fake-agent-command-override'
 import {
-  buildFakeAgentCommandOverride,
-  FAKE_AGENT_WINDOWS_SHELL
-} from './helpers/fake-agent-command-override'
-
-type SpawnEvent = { args: string[]; pid: number }
-type TerminalIdentity = Pick<
-  RuntimeTerminalSummary,
-  'handle' | 'incarnationId' | 'leafId' | 'ptyId' | 'tabId'
->
-
-const PROVIDER_SESSION_ID = '019fc155-00e1-7102-99a9-e7c72e532a8e'
-
-const fakeCliDir = mkdtempSync(path.join(os.tmpdir(), 'nightshift-live-mount-cli-'))
-const spawnLedgerPath = path.join(fakeCliDir, 'codex-spawn.jsonl')
-const setupLedgerPath = path.join(fakeCliDir, 'setup-spawn.jsonl')
-const canaryLedgerPath = path.join(fakeCliDir, 'canary-spawn.jsonl')
-const signalLedgerPath = path.join(fakeCliDir, 'terminal-signals.jsonl')
-const fakeCodexSource = `
-const { appendFileSync } = require('node:fs')
-const args = process.argv.slice(2)
-if (args.includes('app-server')) {
-  process.stderr.write("error: unrecognized subcommand 'app-server'\\n")
-  process.exit(2)
-}
-appendFileSync(process.env.NIGHTSHIFT_E2E_CODEX_SPAWN_LEDGER, JSON.stringify({ args, pid: process.pid }) + '\\n')
-process.stdout.write('LIVE_AGENT_READY:' + process.pid + '\\n')
-let inputBuffer = ''
-process.stdin.on('data', (chunk) => {
-  inputBuffer += chunk.toString()
-  const lines = inputBuffer.split(/[\\r\\n]+/)
-  inputBuffer = lines.pop() || ''
-  for (const line of lines) if (line) process.stdout.write('AGENT_INPUT:' + process.pid + ':' + line + '\\n')
-})
-for (const signal of ['SIGINT', 'SIGHUP', 'SIGTERM']) process.on(signal, () => appendFileSync(process.env.NIGHTSHIFT_E2E_SIGNAL_LEDGER, JSON.stringify({ kind: 'agent', pid: process.pid, signal }) + '\\n'))
-process.stdin.resume()
-setInterval(() => {}, 60_000)
-`
-
-if (process.platform === 'win32') {
-  writeFileSync(path.join(fakeCliDir, 'fake-codex.js'), fakeCodexSource)
-  writeFileSync(
-    path.join(fakeCliDir, 'codex.cmd'),
-    '@echo off\r\nnode "%~dp0\\fake-codex.js" %*\r\n'
-  )
-} else {
-  const executable = path.join(fakeCliDir, 'codex')
-  writeFileSync(executable, `#!/usr/bin/env node\n${fakeCodexSource}`)
-  chmodSync(executable, 0o755)
-}
-
-const fakeCodexCommand = buildFakeAgentCommandOverride(
-  path.join(fakeCliDir, process.platform === 'win32' ? 'codex.cmd' : 'codex')
-)
+  canaryLedgerPath,
+  createSourceRepo,
+  fakeCliDir,
+  fakeCodexCommand,
+  liveTerminalIdentity,
+  readDaemonPid,
+  readJsonLines,
+  readSpawnLedger,
+  readWorktreeTerminals,
+  seedAgentRecoveryMetadata,
+  setupLedgerPath,
+  signalLedgerPath,
+  spawnLedgerPath,
+  terminalIdentity,
+  terminalOutput
+} from './live-background-terminal-mount-authority-fixtures'
+import {
+  activateTerminal,
+  assertExactPtyReceivedMarker,
+  assertLaunchLedgersUnchanged,
+  assertLiveInventory,
+  assertNoInterruption,
+  assertTargetBindings,
+  enableTerminalAccessibility,
+  faultProjectionAndActivate,
+  terminalAccessibility,
+  terminalViewportText,
+  typeIntoTerminal
+} from './live-background-terminal-mount-authority-assertions'
 
 const test = base.extend({
   launchEnv: [
@@ -90,433 +60,6 @@ const test = base.extend({
     { option: true }
   ]
 })
-
-function readSpawnLedger(): SpawnEvent[] {
-  if (!existsSync(spawnLedgerPath)) {
-    return []
-  }
-  return readFileSync(spawnLedgerPath, 'utf8')
-    .split(/\r?\n/)
-    .filter(Boolean)
-    .map((line) => JSON.parse(line) as SpawnEvent)
-}
-
-function readJsonLines<T>(filePath: string): T[] {
-  if (!existsSync(filePath)) {
-    return []
-  }
-  return readFileSync(filePath, 'utf8')
-    .split(/\r?\n/)
-    .filter(Boolean)
-    .map((line) => JSON.parse(line) as T)
-}
-
-function createSourceRepo(): string {
-  const repoPath = mkdtempSync(path.join(os.tmpdir(), 'nightshift-live-mount-repo-'))
-  writeFileSync(
-    path.join(repoPath, 'setup-live.js'),
-    `const { appendFileSync } = require('node:fs')\nappendFileSync(process.env.NIGHTSHIFT_E2E_SETUP_LEDGER, JSON.stringify({ pid: process.pid }) + '\\n')\nconsole.log('SETUP_READY:' + process.pid)\nlet inputBuffer = ''\nprocess.stdin.on('data', chunk => {\n  inputBuffer += chunk.toString()\n  const lines = inputBuffer.split(/[\\r\\n]+/)\n  inputBuffer = lines.pop() || ''\n  for (const line of lines) if (line) console.log('SETUP_INPUT:' + process.pid + ':' + line)\n})\nfor (const signal of ['SIGINT', 'SIGHUP', 'SIGTERM']) process.on(signal, () => appendFileSync(process.env.NIGHTSHIFT_E2E_SIGNAL_LEDGER, JSON.stringify({ kind: 'setup', pid: process.pid, signal }) + '\\n'))\nprocess.stdin.resume()\nsetInterval(() => {}, 60000)\n`
-  )
-  writeFileSync(
-    path.join(repoPath, 'canary-live.js'),
-    `const { appendFileSync } = require('node:fs')\nappendFileSync(process.env.NIGHTSHIFT_E2E_CANARY_LEDGER, JSON.stringify({ pid: process.pid }) + '\\n')\nconsole.log('CANARY_READY:' + process.pid)\nlet inputBuffer = ''\nprocess.stdin.on('data', chunk => {\n  inputBuffer += chunk.toString()\n  const lines = inputBuffer.split(/[\\r\\n]+/)\n  inputBuffer = lines.pop() || ''\n  for (const line of lines) if (line) console.log('CANARY_INPUT:' + process.pid + ':' + line)\n})\nfor (const signal of ['SIGINT', 'SIGHUP', 'SIGTERM']) process.on(signal, () => appendFileSync(process.env.NIGHTSHIFT_E2E_SIGNAL_LEDGER, JSON.stringify({ kind: 'canary', pid: process.pid, signal }) + '\\n'))\nprocess.stdin.resume()\nsetInterval(() => {}, 60000)\n`
-  )
-  writeFileSync(path.join(repoPath, 'nightshift.yaml'), 'scripts:\n  setup: node setup-live.js\n')
-  execFileSync('git', ['init'], { cwd: repoPath })
-  execFileSync('git', ['checkout', '-b', 'main'], { cwd: repoPath })
-  execFileSync('git', ['add', '.'], { cwd: repoPath })
-  execFileSync(
-    'git',
-    [
-      '-c',
-      'user.name=Nightshift E2E',
-      '-c',
-      'user.email=nightshift-e2e@example.com',
-      'commit',
-      '-m',
-      'seed'
-    ],
-    { cwd: repoPath }
-  )
-  return repoPath
-}
-
-async function readWorktreeTerminals(
-  client: RuntimeClient,
-  worktreeId: string
-): Promise<RuntimeTerminalSummary[]> {
-  const listed = await client.call<RuntimeTerminalListResult>('terminal.list', {
-    worktree: `id:${worktreeId}`,
-    limit: 20,
-    requireFreshPtyLiveness: true
-  })
-  return listed.result.terminals
-    .filter((terminal) => terminal.worktreeId === worktreeId)
-    .sort((a, b) => a.handle.localeCompare(b.handle))
-}
-
-async function terminalOutput(client: RuntimeClient, handle: string): Promise<string> {
-  const read = await client.call<{ terminal: RuntimeTerminalRead }>('terminal.read', {
-    terminal: handle,
-    limit: 300
-  })
-  return read.result.terminal.tail.join('\n')
-}
-
-function terminalIdentity(terminal: RuntimeTerminalSummary): TerminalIdentity {
-  const { handle, incarnationId, leafId, ptyId, tabId } = terminal
-  return { handle, incarnationId, leafId, ptyId, tabId }
-}
-
-function liveTerminalIdentity(terminal: RuntimeTerminalSummary) {
-  return {
-    ...terminalIdentity(terminal),
-    connected: terminal.connected,
-    writable: terminal.writable
-  }
-}
-
-function readDaemonPid(userDataDir: string): number {
-  const raw = readFileSync(
-    path.join(userDataDir, 'daemon', `daemon-v${PROTOCOL_VERSION}.pid`),
-    'utf8'
-  )
-  const parsed = JSON.parse(raw) as { pid?: unknown }
-  if (typeof parsed.pid !== 'number' || parsed.pid <= 0) {
-    throw new Error(`Daemon pid file did not contain a positive pid: ${raw}`)
-  }
-  return parsed.pid
-}
-
-async function seedAgentRecoveryMetadata(
-  page: Page,
-  worktreeId: string,
-  agent: TerminalIdentity
-): Promise<void> {
-  const paneKey = makePaneKey(agent.tabId, agent.leafId)
-  const launchToken = `live-mount-${randomUUID()}`
-  await page.evaluate(
-    ({ agent, launchToken, paneKey, providerSessionId, worktreeId }) => {
-      const state = window.__store?.getState()
-      if (!state) {
-        throw new Error('Renderer store unavailable')
-      }
-      const providerSession = { key: 'session_id' as const, id: providerSessionId }
-      state.registerAgentLaunchConfig(
-        paneKey,
-        {
-          agentCommand: 'codex',
-          agentArgs: '--dangerously-bypass-approvals-and-sandbox',
-          agentEnv: {}
-        },
-        {
-          agentType: 'codex',
-          launchToken,
-          tabId: agent.tabId,
-          leafId: agent.leafId,
-          terminalHandle: agent.handle,
-          providerSession
-        }
-      )
-      state.setAgentStatus(
-        paneKey,
-        { state: 'working', prompt: 'keep running', agentType: 'codex' },
-        'Codex',
-        undefined,
-        { tabId: agent.tabId, worktreeId, terminalHandle: agent.handle },
-        { providerSession, launchToken }
-      )
-    },
-    { agent, launchToken, paneKey, providerSessionId: PROVIDER_SESSION_ID, worktreeId }
-  )
-  await expect
-    .poll(() =>
-      page.evaluate(
-        ({ paneKey, providerSessionId, worktreeId }) => {
-          const state = window.__store?.getState()
-          const live = state?.agentStatusByPaneKey[paneKey]
-          const sleeping = state?.sleepingAgentSessionsByPaneKey[paneKey]
-          return {
-            liveProviderSessionId: live?.providerSession?.id ?? null,
-            sleeping: sleeping
-              ? {
-                  paneKey: sleeping.paneKey,
-                  tabId: sleeping.tabId,
-                  worktreeId: sleeping.worktreeId,
-                  origin: sleeping.origin,
-                  providerSessionId: sleeping.providerSession.id,
-                  agentCommand: sleeping.launchConfig?.agentCommand ?? null
-                }
-              : null,
-            expected: { paneKey, providerSessionId, worktreeId }
-          }
-        },
-        { paneKey, providerSessionId: PROVIDER_SESSION_ID, worktreeId }
-      )
-    )
-    .toEqual({
-      liveProviderSessionId: PROVIDER_SESSION_ID,
-      sleeping: {
-        paneKey,
-        tabId: agent.tabId,
-        worktreeId,
-        origin: 'live',
-        providerSessionId: PROVIDER_SESSION_ID,
-        agentCommand: 'codex'
-      },
-      expected: { paneKey, providerSessionId: PROVIDER_SESSION_ID, worktreeId }
-    })
-}
-
-async function readRendererBindings(page: Page, identities: TerminalIdentity[]) {
-  return page.evaluate((targets) => {
-    const state = window.__store?.getState()
-    return targets.map(({ leafId, tabId }) => ({
-      tabId,
-      tabPtyId:
-        Object.values(state?.tabsByWorktree ?? {})
-          .flat()
-          .find((tab) => tab.id === tabId)?.ptyId ?? null,
-      ptyIds: state?.ptyIdsByTabId[tabId] ?? [],
-      leafBindings: Object.entries(state?.terminalLayoutsByTabId[tabId]?.ptyIdsByLeafId ?? {}).sort(
-        ([left], [right]) => left.localeCompare(right)
-      ),
-      leafId
-    }))
-  }, identities)
-}
-
-async function readPersistedBindings(
-  page: Page,
-  worktreeId: string,
-  identities: TerminalIdentity[]
-) {
-  return page.evaluate(
-    async ({ identities, worktreeId }) => {
-      const session = await window.api.session.get()
-      return identities.map(({ leafId, tabId }) => ({
-        tabId,
-        tabPtyId:
-          session.tabsByWorktree[worktreeId]?.find((tab) => tab.id === tabId)?.ptyId ?? null,
-        leafBindings: Object.entries(
-          session.terminalLayoutsByTabId[tabId]?.ptyIdsByLeafId ?? {}
-        ).sort(([left], [right]) => left.localeCompare(right)),
-        leafId
-      }))
-    },
-    { identities, worktreeId }
-  )
-}
-
-function expectedBindings(identities: TerminalIdentity[], includeLiveIds: boolean) {
-  return identities.map(({ leafId, ptyId, tabId }) => ({
-    tabId,
-    tabPtyId: ptyId,
-    ...(includeLiveIds ? { ptyIds: [ptyId] } : {}),
-    leafBindings: [[leafId, ptyId]],
-    leafId
-  }))
-}
-
-async function assertTargetBindings(
-  page: Page,
-  worktreeId: string,
-  identities: TerminalIdentity[]
-): Promise<void> {
-  await expect
-    .poll(() => readRendererBindings(page, identities), { timeout: 15_000 })
-    .toEqual(expectedBindings(identities, true))
-  await expect
-    .poll(() => readPersistedBindings(page, worktreeId, identities), { timeout: 15_000 })
-    .toEqual(expectedBindings(identities, false))
-}
-
-async function assertLiveInventory(
-  client: RuntimeClient,
-  worktreeId: string,
-  originals: RuntimeTerminalSummary[]
-): Promise<void> {
-  await expect
-    .poll(async () => (await readWorktreeTerminals(client, worktreeId)).map(liveTerminalIdentity), {
-      timeout: 15_000
-    })
-    .toEqual(originals.map(liveTerminalIdentity))
-}
-
-async function assertLaunchLedgersUnchanged(): Promise<void> {
-  await expect
-    .poll(
-      () => ({
-        agent: readSpawnLedger().length,
-        setup: readJsonLines<{ pid: number }>(setupLedgerPath).length,
-        canary: readJsonLines<{ pid: number }>(canaryLedgerPath).length
-      }),
-      { timeout: 10_000 }
-    )
-    .toEqual({ agent: 1, setup: 1, canary: 1 })
-  const agentLaunches = readSpawnLedger()
-  expect(agentLaunches.filter(({ args }) => args.includes('resume'))).toHaveLength(0)
-  expect(agentLaunches.filter(({ args }) => args.includes(PROVIDER_SESSION_ID))).toHaveLength(0)
-}
-
-async function assertNoInterruption(
-  client: RuntimeClient,
-  terminals: RuntimeTerminalSummary[]
-): Promise<void> {
-  const outputs = await Promise.all(
-    terminals.map((terminal) => terminalOutput(client, terminal.handle))
-  )
-  expect(outputs.join('\n')).not.toContain('Conversation interrupted')
-}
-
-async function faultProjectionAndActivate(
-  page: Page,
-  worktreeId: string,
-  terminals: RuntimeTerminalSummary[],
-  activeTabId: string
-): Promise<void> {
-  await expect
-    .poll(() =>
-      page.evaluate(
-        ({ tabIds, worktreeId }) => {
-          const state = window.__store?.getState()
-          const tabs = state?.tabsByWorktree[worktreeId] ?? []
-          return tabIds.every(
-            (tabId) =>
-              tabs.some((tab) => tab.id === tabId) &&
-              Boolean(state?.terminalLayoutsByTabId[tabId]?.root) &&
-              !window.__paneManagers?.has(tabId)
-          )
-        },
-        { tabIds: terminals.map((terminal) => terminal.tabId), worktreeId }
-      )
-    )
-    .toBe(true)
-
-  await page.evaluate(
-    ({ activeTabId, identities, worktreeId }) => {
-      const store = window.__store
-      if (!store) {
-        throw new Error('Renderer store unavailable')
-      }
-      store.setState((state) => {
-        const tabsByWorktree = { ...state.tabsByWorktree }
-        tabsByWorktree[worktreeId] = (tabsByWorktree[worktreeId] ?? []).map((tab) =>
-          identities.some((identity) => identity.tabId === tab.id) ? { ...tab, ptyId: null } : tab
-        )
-        const ptyIdsByTabId = { ...state.ptyIdsByTabId }
-        const terminalLayoutsByTabId = { ...state.terminalLayoutsByTabId }
-        for (const identity of identities) {
-          ptyIdsByTabId[identity.tabId] = []
-          const layout = terminalLayoutsByTabId[identity.tabId]
-          if (layout) {
-            const ptyIdsByLeafId = { ...layout.ptyIdsByLeafId }
-            delete ptyIdsByLeafId[identity.leafId]
-            terminalLayoutsByTabId[identity.tabId] = {
-              ...layout,
-              ptyIdsByLeafId
-            }
-          }
-        }
-        return { tabsByWorktree, ptyIdsByTabId, terminalLayoutsByTabId }
-      })
-      const next = store.getState()
-      next.setActiveRepo(
-        next.repos.find((repo) => repo.id === worktreeId.split('::')[0])?.id ?? null
-      )
-      next.setActiveTabForWorktree(worktreeId, activeTabId)
-      next.setActiveView('terminal')
-      next.setActiveWorktree(worktreeId)
-    },
-    {
-      activeTabId,
-      identities: terminals.map(({ tabId, leafId }) => ({ tabId, leafId })),
-      worktreeId
-    }
-  )
-  await ensureTerminalVisible(page)
-  await waitForActiveTerminalManager(page, 30_000)
-}
-
-async function activateTerminal(page: Page, worktreeId: string, tabId: string): Promise<void> {
-  await page.evaluate(
-    ({ tabId, worktreeId }) => {
-      const state = window.__store?.getState()
-      state?.setActiveRepo(
-        state.repos.find((repo) => repo.id === worktreeId.split('::')[0])?.id ?? null
-      )
-      state?.setActiveTabForWorktree(worktreeId, tabId)
-      state?.setActiveView('terminal')
-      state?.setActiveWorktree(worktreeId)
-    },
-    { tabId, worktreeId }
-  )
-  await ensureTerminalVisible(page)
-  await waitForActiveTerminalManager(page, 30_000)
-  await page.locator(`[data-testid="sortable-tab"][data-tab-id="${tabId}"]`).click({ force: true })
-}
-
-async function enableTerminalAccessibility(page: Page, tabId: string): Promise<void> {
-  await page.evaluate((id) => {
-    const manager = window.__paneManagers?.get(id)
-    const pane = manager?.getActivePane?.() ?? manager?.getPanes?.()[0]
-    if (!pane) {
-      throw new Error(`Terminal pane unavailable: ${id}`)
-    }
-    pane.terminal.options.screenReaderMode = true
-    pane.terminal.refresh(0, pane.terminal.rows - 1)
-  }, tabId)
-  await expect(
-    page.locator(`[data-terminal-tab-id=${JSON.stringify(tabId)}] .xterm-accessibility-tree`)
-  ).toBeAttached({ timeout: 10_000 })
-}
-
-function terminalAccessibility(page: Page, tabId: string) {
-  return page.locator(`[data-terminal-tab-id=${JSON.stringify(tabId)}] .xterm-accessibility-tree`)
-}
-
-async function terminalViewportText(page: Page, tabId: string): Promise<string> {
-  return page.evaluate((id) => {
-    const pane = window.__paneManagers?.get(id)?.getActivePane?.()
-    if (!pane) {
-      throw new Error(`Terminal pane unavailable: ${id}`)
-    }
-    const buffer = pane.terminal.buffer.active
-    return Array.from(
-      { length: pane.terminal.rows },
-      (_, row) => buffer.getLine(buffer.viewportY + row)?.translateToString(true) ?? ''
-    ).join('\n')
-  }, tabId)
-}
-
-async function typeIntoTerminal(page: Page, tabId: string, marker: string): Promise<void> {
-  const terminal = page.locator(`[data-terminal-tab-id=${JSON.stringify(tabId)}] .xterm:visible`)
-  await terminal.click({ force: true })
-  await page.keyboard.type(marker, { delay: 20 })
-  await page.keyboard.press('Enter')
-}
-
-async function assertExactPtyReceivedMarker(
-  electronApp: Parameters<typeof readTerminalPtyWriteEntries>[0],
-  ptyId: string,
-  marker: string
-): Promise<void> {
-  const command = `${marker}\r`
-  await expect
-    .poll(async () => {
-      const entries = await readTerminalPtyWriteEntries(electronApp)
-      return entries
-        .filter((entry) => entry.id === ptyId)
-        .map((entry) => entry.data)
-        .join('')
-    })
-    .toContain(command)
-  const unrelatedWrites = (await readTerminalPtyWriteEntries(electronApp))
-    .filter((entry) => entry.id !== ptyId)
-    .map((entry) => entry.data)
-    .join('')
-  expect(unrelatedWrites).not.toContain(command)
-}
 
 test.afterEach(() => {
   rmSync(spawnLedgerPath, { force: true })

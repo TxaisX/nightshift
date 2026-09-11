@@ -451,13 +451,13 @@ describe('store selectors', () => {
         id: 'local-nightshift',
         path: '/Users/alice/stably/nightshift',
         displayName: 'nightshift',
-        upstream: { owner: 'txais', repo: 'nightshift' }
+        upstream: { owner: 'TxaisX', repo: 'nightshift' }
       }),
       makeRepo({
         id: 'vm-nightshift',
         path: '/vercel/sandbox/nightshift',
         displayName: 'nightshift',
-        upstream: { owner: 'txais', repo: 'nightshift' },
+        upstream: { owner: 'TxaisX', repo: 'nightshift' },
         executionHostId: toRuntimeExecutionHostId('vm-env')
       })
     ]
@@ -527,7 +527,7 @@ describe('store selectors', () => {
         id: 'repo-1',
         path: '/Users/alice/nightshift',
         displayName: 'nightshift',
-        upstream: { owner: 'txais', repo: 'nightshift' }
+        upstream: { owner: 'TxaisX', repo: 'nightshift' }
       })
     ]
 

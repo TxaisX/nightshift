@@ -219,14 +219,14 @@ describe('NightshiftRuntimeService', () => {
     }
     const runtime = new NightshiftRuntimeService(runtimeStore as never)
     getRepoSlugMock.mockResolvedValueOnce({ owner: 'acme', repo: 'nightshift' })
-    getRepoUpstreamMock.mockResolvedValueOnce({ owner: 'txais', repo: 'nightshift' })
+    getRepoUpstreamMock.mockResolvedValueOnce({ owner: 'TxaisX', repo: 'nightshift' })
 
     await expect(runtime.getRepoSlug('id:repo-1')).resolves.toEqual({
       owner: 'acme',
       repo: 'nightshift'
     })
     await expect(runtime.getRepoUpstream('id:repo-1')).resolves.toEqual({
-      owner: 'txais',
+      owner: 'TxaisX',
       repo: 'nightshift'
     })
 

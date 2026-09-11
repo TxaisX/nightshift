@@ -20,7 +20,7 @@ function repo(id: string, overrides: Partial<Repo> = {}): Repo {
     displayName: id,
     badgeColor: '#111111',
     addedAt: 1,
-    upstream: { owner: 'txais', repo: 'nightshift' },
+    upstream: { owner: 'TxaisX', repo: 'nightshift' },
     ...overrides
   }
 }
@@ -30,7 +30,7 @@ function project(overrides: Partial<Project> = {}): Project {
     id: 'github:TxaisX/nightshift',
     displayName: 'nightshift',
     badgeColor: '#111111',
-    providerIdentity: { provider: 'github', owner: 'txais', repo: 'nightshift' },
+    providerIdentity: { provider: 'github', owner: 'TxaisX', repo: 'nightshift' },
     sourceRepoIds: ['local-repo', 'ssh-repo'],
     createdAt: 1,
     updatedAt: 1,

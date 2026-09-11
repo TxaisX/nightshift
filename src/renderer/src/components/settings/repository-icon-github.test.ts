@@ -37,7 +37,7 @@ describe('repository GitHub avatar resolution', () => {
   })
 
   it('uses stored upstream by default and keeps the parent avatar for same-name forks', async () => {
-    const repo = makeRepo({ upstream: { owner: 'txais', repo: 'nightshift' } })
+    const repo = makeRepo({ upstream: { owner: 'TxaisX', repo: 'nightshift' } })
     // The fork's own origin owner — same repo name, so the parent avatar wins.
     apiMocks.repoSlug.mockResolvedValueOnce({ owner: 'tmchow', repo: 'nightshift' })
 
@@ -48,7 +48,7 @@ describe('repository GitHub avatar resolution', () => {
         source: 'github',
         label: 'TxaisX/nightshift'
       },
-      upstream: { owner: 'txais', repo: 'nightshift' }
+      upstream: { owner: 'TxaisX', repo: 'nightshift' }
     })
 
     expect(apiMocks.repoUpstream).not.toHaveBeenCalled()
@@ -166,7 +166,7 @@ describe('repository GitHub avatar resolution', () => {
     // A fork whose avatar tracks its parent org. The live upstream probe fails
     // (offline/unauthed → null), which must NOT downgrade to the origin slug.
     const repo = makeRepo({
-      upstream: { owner: 'txais', repo: 'nightshift' },
+      upstream: { owner: 'TxaisX', repo: 'nightshift' },
       repoIcon: {
         type: 'image',
         src: 'https://github.com/txais.png?size=64',
@@ -189,7 +189,7 @@ describe('repository GitHub avatar resolution', () => {
         source: 'github',
         label: 'TxaisX/nightshift'
       },
-      upstream: { owner: 'txais', repo: 'nightshift' }
+      upstream: { owner: 'TxaisX', repo: 'nightshift' }
     })
     // Nothing changed, so no repo write is produced (no sticky null clobber).
     expect(buildRepositoryGitHubAvatarUpdate(repo, resolution)).toBeNull()

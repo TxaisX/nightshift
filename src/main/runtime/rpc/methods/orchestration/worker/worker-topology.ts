@@ -4,6 +4,7 @@ import type { NightshiftRuntimeService } from '../../../../nightshift-runtime'
 import type { OrchestrationDb } from '../../../../orchestration/db'
 import { OrchestrationError } from '../../../../orchestration/orchestration-error'
 import { createStructuredWorkerSession } from '../../orchestration-structured-worker-session'
+export { isUnknownWorkerStartOutcome } from './worker-start-outcome-classification'
 
 export type WorkerEffect = {
   kind: 'worktree' | 'terminal' | 'setup' | 'dispatch_input'
@@ -306,19 +307,4 @@ export function monitorWorkerSetup(args: {
       args.runtime.notifyMessageArrived(message.to_handle, message.type)
     })
     .catch(() => undefined)
-}
-
-export function isUnknownWorkerStartOutcome(error: unknown, stage: string): boolean {
-  const code =
-    error && typeof error === 'object' && typeof (error as { code?: unknown }).code === 'string'
-      ? (error as { code: string }).code
-      : ''
-  if (code === 'operation_unknown') {
-    return true
-  }
-  if (stage !== 'worktree_create') {
-    return false
-  }
-  const message = error instanceof Error ? error.message : String(error)
-  return /connection|disconnect|timed?\s*out|runtime changed|outcome unknown/i.test(message)
 }

@@ -24,7 +24,7 @@ const plugin: PluginHostListEntry = {
   consentFingerprint: 'sha256-consent',
   name: 'Nightshift Skills',
   version: '1.0.0',
-  publisher: 'txais',
+  publisher: 'TxaisX',
   status: 'disabled',
   needsReconsent: false,
   isDev: false,

@@ -4,10 +4,8 @@ import { abortSignalReason } from './abort-signal-reason'
 import type { PairingOffer } from './pairing'
 import { scheduleOrphanedRemoteRuntimeSocketClose } from './remote-runtime-abort-orphaned-socket'
 import { decrypt, encrypt } from './e2ee-crypto'
-import {
-  serializeRemoteRuntimePayload,
-  serializeRemoteRuntimeRpcRequest
-} from './remote-runtime-memory-limits'
+import { serializeRemoteRuntimeRpcRequest } from './remote-runtime-memory-limits'
+import { buildRemoteRuntimeAuthFrame } from './remote-runtime-request-auth-frame'
 import {
   prepareRemoteRuntimeRequest,
   releaseRemoteRuntimePreparedRequest,
@@ -32,7 +30,6 @@ import {
   type RemoteRuntimeRequestReadyWaiter
 } from './remote-runtime-request-ready-waiters'
 import { openRemoteRuntimeWebSocket } from './remote-runtime-request-websocket'
-import { remoteRuntimeClientCapabilities } from './remote-runtime-client-capabilities'
 import type { RuntimeCapability } from './protocol-version'
 type ConnectionState = 'closed' | 'awaiting_ready' | 'awaiting_authenticated' | 'ready'
 const IDLE_CLOSE_MS = 60_000
@@ -235,14 +232,7 @@ export class RemoteRuntimeRequestConnection {
       return
     }
     this.ws?.send(
-      encrypt(
-        serializeRemoteRuntimePayload({
-          type: 'e2ee_auth',
-          deviceToken: this.pairing.deviceToken,
-          clientCapabilities: remoteRuntimeClientCapabilities(this.additionalClientCapabilities)
-        }),
-        sharedKey
-      )
+      buildRemoteRuntimeAuthFrame(this.pairing, this.additionalClientCapabilities, sharedKey)
     )
   }
 

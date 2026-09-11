@@ -76,7 +76,7 @@ describe('getPRForBranch', () => {
   it('resolves fork PRs from the upstream PR repo with the origin head owner', async () => {
     resolvePRRepositoryCandidatesMock.mockResolvedValueOnce({
       candidates: [
-        { owner: 'txais', repo: 'nightshift' },
+        { owner: 'TxaisX', repo: 'nightshift' },
         { owner: 'fork', repo: 'nightshift' }
       ],
       headRepo: { owner: 'fork', repo: 'nightshift' }
@@ -105,7 +105,7 @@ describe('getPRForBranch', () => {
     )
     expect(pr).toMatchObject({
       number: 1738,
-      prRepo: { owner: 'txais', repo: 'nightshift' },
+      prRepo: { owner: 'TxaisX', repo: 'nightshift' },
       headRepo: { owner: 'fork', repo: 'nightshift' }
     })
   })

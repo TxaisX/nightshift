@@ -15,13 +15,13 @@ describe('IssueSourceIndicator suppression', () => {
     expect(
       sameGitHubOwnerRepo(
         { owner: 'Txais', repo: 'Nightshift' },
-        { owner: 'txais', repo: 'nightshift' }
+        { owner: 'TxaisX', repo: 'nightshift' }
       )
     ).toBe(true)
     expect(
       sameGitHubOwnerRepo(
-        { owner: 'txais', repo: 'nightshift', host: 'github.com' },
-        { owner: 'txais', repo: 'nightshift', host: 'ghe.example.test' }
+        { owner: 'TxaisX', repo: 'nightshift', host: 'github.com' },
+        { owner: 'TxaisX', repo: 'nightshift', host: 'ghe.example.test' }
       )
     ).toBe(false)
     expect(sameGitHubOwnerRepo({ owner: 'a', repo: 'r' }, { owner: 'b', repo: 'r' })).toBe(false)

@@ -23,7 +23,7 @@ describe('task source context', () => {
       normalizeTaskSourceContext({
         provider: 'github',
         projectId: ' project-1 ',
-        providerIdentity: { provider: 'github', owner: 'txais', repo: 'nightshift' }
+        providerIdentity: { provider: 'github', owner: 'TxaisX', repo: 'nightshift' }
       })
     ).toEqual({
       kind: 'task-source',
@@ -32,7 +32,7 @@ describe('task source context', () => {
       hostId: 'local',
       projectHostSetupId: null,
       repoId: null,
-      providerIdentity: { provider: 'github', owner: 'txais', repo: 'nightshift' },
+      providerIdentity: { provider: 'github', owner: 'TxaisX', repo: 'nightshift' },
       accountLabel: null
     })
   })
@@ -83,14 +83,14 @@ describe('task source context', () => {
       projectId: 'project-1',
       hostId: 'local',
       repoId: 'repo-1',
-      providerIdentity: { provider: 'github', owner: 'txais', repo: 'nightshift' }
+      providerIdentity: { provider: 'github', owner: 'TxaisX', repo: 'nightshift' }
     })
     const ssh = getTaskSourceCacheScope({
       provider: 'github',
       projectId: 'project-1',
       hostId: toSshExecutionHostId('builder'),
       repoId: 'repo-1',
-      providerIdentity: { provider: 'github', owner: 'txais', repo: 'nightshift' }
+      providerIdentity: { provider: 'github', owner: 'TxaisX', repo: 'nightshift' }
     })
     const differentRepo = getTaskSourceCacheScope({
       provider: 'github',
@@ -106,7 +106,7 @@ describe('task source context', () => {
       repoId: 'repo-1',
       providerIdentity: {
         provider: 'github',
-        owner: 'txais',
+        owner: 'TxaisX',
         repo: 'nightshift',
         host: 'github.acme.test'
       }
@@ -156,7 +156,7 @@ describe('task source context', () => {
       normalizeTaskSourceContext({
         provider: 'gitlab',
         projectId: 'project-1',
-        providerIdentity: { provider: 'github', owner: 'txais', repo: 'nightshift' }
+        providerIdentity: { provider: 'github', owner: 'TxaisX', repo: 'nightshift' }
       })?.providerIdentity
     ).toBeNull()
   })

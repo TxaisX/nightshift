@@ -33,7 +33,7 @@ describe('NightshiftRuntimeService', () => {
     const clonePath = join(destination, 'nightshift')
     const spawnSpy = vi.spyOn(gitRunner, 'gitSpawnAfterWindowsEnvironmentReady')
     const repos: Record<string, unknown>[] = []
-    getRepoUpstreamMock.mockResolvedValue({ owner: 'txais', repo: 'nightshift' })
+    getRepoUpstreamMock.mockResolvedValue({ owner: 'TxaisX', repo: 'nightshift' })
     const runtimeStore = {
       ...store,
       getRepos: () => [...repos] as never,
@@ -113,7 +113,7 @@ describe('NightshiftRuntimeService', () => {
         executionHostId: 'runtime:env-1'
       }
     ]
-    getRepoUpstreamMock.mockResolvedValue({ owner: 'txais', repo: 'nightshift' })
+    getRepoUpstreamMock.mockResolvedValue({ owner: 'TxaisX', repo: 'nightshift' })
     const runtimeStore = {
       ...store,
       getRepos: () => [...repos] as never,

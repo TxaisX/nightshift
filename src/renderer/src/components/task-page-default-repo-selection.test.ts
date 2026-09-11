@@ -22,7 +22,7 @@ function repo(overrides: Partial<Repo> & Pick<Repo, 'id'>): Repo {
 describe('getTaskEligibleRepos', () => {
   it('keeps only Git repos with a resolvable remote identity', () => {
     const eligible = getTaskEligibleRepos([
-      repo({ id: 'github-upstream', upstream: { owner: 'txais', repo: 'nightshift' } }),
+      repo({ id: 'github-upstream', upstream: { owner: 'TxaisX', repo: 'nightshift' } }),
       repo({
         id: 'github-icon',
         repoIcon: {
@@ -52,7 +52,7 @@ describe('getTaskEligibleRepos', () => {
       repo({
         id: 'folder-with-remote',
         kind: 'folder',
-        upstream: { owner: 'txais', repo: 'docs' }
+        upstream: { owner: 'TxaisX', repo: 'docs' }
       })
     ])
 
@@ -122,11 +122,11 @@ describe('getDefaultTaskRepoSelection', () => {
       repo({
         id: 'ssh-nightshift',
         connectionId: 'builder',
-        upstream: { owner: 'txais', repo: 'nightshift' }
+        upstream: { owner: 'TxaisX', repo: 'nightshift' }
       }),
       repo({
         id: 'other',
-        upstream: { owner: 'txais', repo: 'other' }
+        upstream: { owner: 'TxaisX', repo: 'other' }
       })
     ])
 
@@ -140,7 +140,7 @@ describe('getDefaultTaskRepoSelection', () => {
         repo({
           id: 'ssh-nightshift',
           connectionId: 'builder',
-          upstream: { owner: 'txais', repo: 'nightshift' }
+          upstream: { owner: 'TxaisX', repo: 'nightshift' }
         }),
         repo({ id: 'ssh-gitlab-pending', connectionId: 'builder' })
       ])
@@ -155,12 +155,12 @@ describe('getDefaultTaskRepoSelection', () => {
         id: 'ssh-nightshift',
         addedAt: 1,
         connectionId: 'builder',
-        upstream: { owner: 'txais', repo: 'nightshift' }
+        upstream: { owner: 'TxaisX', repo: 'nightshift' }
       }),
       repo({
         id: 'local-nightshift',
         addedAt: 2,
-        upstream: { owner: 'txais', repo: 'nightshift' }
+        upstream: { owner: 'TxaisX', repo: 'nightshift' }
       })
     ])
 
@@ -215,11 +215,11 @@ describe('getTaskProjectPickerRepos', () => {
       repo({
         id: 'ssh-nightshift',
         connectionId: 'builder',
-        upstream: { owner: 'txais', repo: 'nightshift' }
+        upstream: { owner: 'TxaisX', repo: 'nightshift' }
       }),
       repo({
         id: 'other',
-        upstream: { owner: 'txais', repo: 'other' }
+        upstream: { owner: 'TxaisX', repo: 'other' }
       })
     ])
 
@@ -231,12 +231,12 @@ describe('getTaskProjectPickerRepos', () => {
       [
         repo({
           id: 'local-nightshift',
-          upstream: { owner: 'txais', repo: 'nightshift' }
+          upstream: { owner: 'TxaisX', repo: 'nightshift' }
         }),
         repo({
           id: 'ssh-nightshift',
           connectionId: 'builder',
-          upstream: { owner: 'txais', repo: 'nightshift' }
+          upstream: { owner: 'TxaisX', repo: 'nightshift' }
         })
       ],
       new Set(['ssh-nightshift'])
@@ -279,16 +279,16 @@ describe('getTaskProjectPickerGroups', () => {
     const groups = getTaskProjectPickerGroups([
       repo({
         id: 'local-nightshift',
-        upstream: { owner: 'txais', repo: 'nightshift' }
+        upstream: { owner: 'TxaisX', repo: 'nightshift' }
       }),
       repo({
         id: 'ssh-nightshift',
         connectionId: 'builder',
-        upstream: { owner: 'txais', repo: 'nightshift' }
+        upstream: { owner: 'TxaisX', repo: 'nightshift' }
       }),
       repo({
         id: 'docs',
-        upstream: { owner: 'txais', repo: 'docs' }
+        upstream: { owner: 'TxaisX', repo: 'docs' }
       })
     ])
 
@@ -312,12 +312,12 @@ describe('getTaskProjectPickerGroups', () => {
       [
         repo({
           id: 'local-nightshift',
-          upstream: { owner: 'txais', repo: 'nightshift' }
+          upstream: { owner: 'TxaisX', repo: 'nightshift' }
         }),
         repo({
           id: 'ssh-nightshift',
           connectionId: 'builder',
-          upstream: { owner: 'txais', repo: 'nightshift' }
+          upstream: { owner: 'TxaisX', repo: 'nightshift' }
         })
       ],
       new Set(['ssh-nightshift'])
@@ -337,12 +337,12 @@ describe('normalizeTaskRepoSelection', () => {
       [
         repo({
           id: 'local-nightshift',
-          upstream: { owner: 'txais', repo: 'nightshift' }
+          upstream: { owner: 'TxaisX', repo: 'nightshift' }
         }),
         repo({
           id: 'ssh-nightshift',
           connectionId: 'builder',
-          upstream: { owner: 'txais', repo: 'nightshift' }
+          upstream: { owner: 'TxaisX', repo: 'nightshift' }
         })
       ],
       new Set(['local-nightshift', 'ssh-nightshift'])
@@ -356,12 +356,12 @@ describe('normalizeTaskRepoSelection', () => {
       [
         repo({
           id: 'local-nightshift',
-          upstream: { owner: 'txais', repo: 'nightshift' }
+          upstream: { owner: 'TxaisX', repo: 'nightshift' }
         }),
         repo({
           id: 'ssh-nightshift',
           connectionId: 'builder',
-          upstream: { owner: 'txais', repo: 'nightshift' }
+          upstream: { owner: 'TxaisX', repo: 'nightshift' }
         })
       ],
       new Set(['ssh-nightshift'])
@@ -375,16 +375,16 @@ describe('normalizeTaskRepoSelection', () => {
       [
         repo({
           id: 'local-nightshift',
-          upstream: { owner: 'txais', repo: 'nightshift' }
+          upstream: { owner: 'TxaisX', repo: 'nightshift' }
         }),
         repo({
           id: 'ssh-nightshift',
           connectionId: 'builder',
-          upstream: { owner: 'txais', repo: 'nightshift' }
+          upstream: { owner: 'TxaisX', repo: 'nightshift' }
         }),
         repo({
           id: 'docs',
-          upstream: { owner: 'txais', repo: 'docs' }
+          upstream: { owner: 'TxaisX', repo: 'docs' }
         })
       ],
       new Set(['local-nightshift', 'ssh-nightshift', 'docs'])

@@ -46,7 +46,7 @@ describe('getPRForBranch', () => {
   it('uses the tracked upstream remote owner for fork branch lookup', async () => {
     resolvePRRepositoryCandidatesMock.mockResolvedValueOnce({
       candidates: [
-        { owner: 'txais', repo: 'nightshift' },
+        { owner: 'TxaisX', repo: 'nightshift' },
         { owner: 'origin-owner', repo: 'nightshift' }
       ],
       headRepo: { owner: 'origin-owner', repo: 'nightshift' }
@@ -105,7 +105,7 @@ describe('getPRForBranch', () => {
     expect(pr).toMatchObject({
       number: 78,
       title: 'Hydrated fork upstream branch PR',
-      prRepo: { owner: 'txais', repo: 'nightshift' },
+      prRepo: { owner: 'TxaisX', repo: 'nightshift' },
       headRepo: { owner: 'fork-owner', repo: 'nightshift' }
     })
   })
@@ -113,7 +113,7 @@ describe('getPRForBranch', () => {
   it('uses the tracked upstream remote owner when the fork branch name matches locally', async () => {
     resolvePRRepositoryCandidatesMock.mockResolvedValueOnce({
       candidates: [
-        { owner: 'txais', repo: 'nightshift' },
+        { owner: 'TxaisX', repo: 'nightshift' },
         { owner: 'origin-owner', repo: 'nightshift' }
       ],
       headRepo: { owner: 'origin-owner', repo: 'nightshift' }
@@ -174,7 +174,7 @@ describe('getPRForBranch', () => {
     )
     expect(pr).toMatchObject({
       number: 6433,
-      prRepo: { owner: 'txais', repo: 'nightshift' },
+      prRepo: { owner: 'TxaisX', repo: 'nightshift' },
       headRepo: { owner: 'brennanb2025', repo: 'nightshift' }
     })
   })
@@ -259,7 +259,7 @@ describe('getPRForBranch', () => {
     getSshGitProviderMock.mockReturnValue(sshGitProvider)
     resolvePRRepositoryCandidatesMock.mockResolvedValueOnce({
       candidates: [
-        { owner: 'txais', repo: 'nightshift' },
+        { owner: 'TxaisX', repo: 'nightshift' },
         { owner: 'origin-owner', repo: 'nightshift' }
       ],
       headRepo: { owner: 'origin-owner', repo: 'nightshift' }
@@ -289,13 +289,16 @@ describe('getPRForBranch', () => {
     expect(getOwnerRepoForRemoteMock).toHaveBeenCalledWith('/remote/repo-root', 'fork', 'ssh-1')
     expect(ghExecFileAsyncMock).toHaveBeenNthCalledWith(
       3,
-      ['api', 'repos/TxaisX/nightshift/pulls?head=fork-owner%3Acontributor%2Ffix&state=all&per_page=1'],
+      [
+        'api',
+        'repos/TxaisX/nightshift/pulls?head=fork-owner%3Acontributor%2Ffix&state=all&per_page=1'
+      ],
       {}
     )
     expect(pr).toMatchObject({
       number: 79,
       title: 'SSH same-name fork PR',
-      prRepo: { owner: 'txais', repo: 'nightshift' },
+      prRepo: { owner: 'TxaisX', repo: 'nightshift' },
       headRepo: { owner: 'fork-owner', repo: 'nightshift' }
     })
   })

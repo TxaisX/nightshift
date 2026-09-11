@@ -23,7 +23,7 @@ async function writeBundle(root: string, name = 'Skills'): Promise<{ path: strin
     JSON.stringify({
       manifestVersion: 1,
       id: 'nightshift-skills',
-      publisher: 'txais',
+      publisher: 'TxaisX',
       name,
       version: '1.0.0',
       engines: { nightshift: '>=1.0.0' },

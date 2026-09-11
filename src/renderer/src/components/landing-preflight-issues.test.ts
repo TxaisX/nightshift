@@ -98,7 +98,7 @@ describe('landing preflight issues', () => {
           id: 'github-repo',
           path: '/Users/alice/nightshift',
           displayName: 'nightshift',
-          upstream: { owner: 'txais', repo: 'nightshift' }
+          upstream: { owner: 'TxaisX', repo: 'nightshift' }
         })
       ])
     ).toBe(true)

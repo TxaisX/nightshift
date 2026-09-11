@@ -163,7 +163,7 @@ describe('syncForkDefaultBranch', () => {
 
     await expect(
       syncForkDefaultBranch(runGit, {
-        expectedUpstream: { owner: 'txais', repo: 'nightshift' }
+        expectedUpstream: { owner: 'TxaisX', repo: 'nightshift' }
       })
     ).resolves.toMatchObject({
       status: 'blocked',
@@ -180,7 +180,7 @@ describe('syncForkDefaultBranch', () => {
 
     await expect(
       syncForkDefaultBranch(runGit, {
-        expectedUpstream: { owner: 'txais', repo: 'nightshift' }
+        expectedUpstream: { owner: 'TxaisX', repo: 'nightshift' }
       })
     ).resolves.toMatchObject({
       status: 'blocked',

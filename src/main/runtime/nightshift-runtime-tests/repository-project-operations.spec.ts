@@ -122,7 +122,7 @@ describe('NightshiftRuntimeService', () => {
   it('sets up an existing folder on a fresh runtime after importing the repo project', async () => {
     const tempRoot = await mkdtemp(join(tmpdir(), 'nightshift-runtime-project-setup-'))
     const repos: Record<string, unknown>[] = []
-    getRepoUpstreamMock.mockResolvedValueOnce({ owner: 'txais', repo: 'nightshift' })
+    getRepoUpstreamMock.mockResolvedValueOnce({ owner: 'TxaisX', repo: 'nightshift' })
     const runtimeStore = {
       ...store,
       getRepos: () => [...repos] as never,
@@ -340,7 +340,7 @@ describe('NightshiftRuntimeService', () => {
   it('keeps existing-folder imports split by runtime host on the same normalized path', async () => {
     const tempRoot = await mkdtemp(join(tmpdir(), 'nightshift-runtime-project-host-'))
     const repos: Record<string, unknown>[] = []
-    getRepoUpstreamMock.mockResolvedValue({ owner: 'txais', repo: 'nightshift' })
+    getRepoUpstreamMock.mockResolvedValue({ owner: 'TxaisX', repo: 'nightshift' })
     const runtimeStore = {
       ...store,
       getRepos: () => [...repos] as never,
@@ -531,7 +531,7 @@ describe('NightshiftRuntimeService', () => {
     const clonePath = join(destination, 'nightshift')
     const spawnSpy = vi.spyOn(gitRunner, 'gitSpawnAfterWindowsEnvironmentReady')
     const repos: Record<string, unknown>[] = []
-    getRepoUpstreamMock.mockResolvedValue({ owner: 'txais', repo: 'nightshift' })
+    getRepoUpstreamMock.mockResolvedValue({ owner: 'TxaisX', repo: 'nightshift' })
     const runtimeStore = {
       ...store,
       getRepos: () => [...repos] as never,

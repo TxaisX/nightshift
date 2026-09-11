@@ -57,26 +57,26 @@ describe('NightshiftRuntimeRpcServer', () => {
       id: 'req_project_issue_types',
       method: 'github.project.listIssueTypesBySlug',
       deviceToken: mobile.token,
-      params: { owner: 'txais', repo: 'nightshift' }
+      params: { owner: 'TxaisX', repo: 'nightshift' }
     })
     await dispatch({
       id: 'req_project_labels',
       method: 'github.project.listLabelsBySlug',
       deviceToken: mobile.token,
-      params: { owner: 'txais', repo: 'nightshift' }
+      params: { owner: 'TxaisX', repo: 'nightshift' }
     })
     await dispatch({
       id: 'req_project_assignees',
       method: 'github.project.listAssignableUsersBySlug',
       deviceToken: mobile.token,
-      params: { owner: 'txais', repo: 'nightshift', seedLogins: ['alex'] }
+      params: { owner: 'TxaisX', repo: 'nightshift', seedLogins: ['alex'] }
     })
     await dispatch({
       id: 'req_project_update_issue',
       method: 'github.project.updateIssueBySlug',
       deviceToken: mobile.token,
       params: {
-        owner: 'txais',
+        owner: 'TxaisX',
         repo: 'nightshift',
         number: 123,
         updates: { title: 'New title' }
@@ -87,7 +87,7 @@ describe('NightshiftRuntimeRpcServer', () => {
       method: 'github.project.updateIssueTypeBySlug',
       deviceToken: mobile.token,
       params: {
-        owner: 'txais',
+        owner: 'TxaisX',
         repo: 'nightshift',
         number: 123,
         issueTypeId: 'type-1'
@@ -119,7 +119,7 @@ describe('NightshiftRuntimeRpcServer', () => {
       method: 'github.project.updatePullRequestBySlug',
       deviceToken: mobile.token,
       params: {
-        owner: 'txais',
+        owner: 'TxaisX',
         repo: 'nightshift',
         number: 456,
         updates: { state: 'closed' }
@@ -130,7 +130,7 @@ describe('NightshiftRuntimeRpcServer', () => {
       method: 'github.project.addIssueCommentBySlug',
       deviceToken: mobile.token,
       params: {
-        owner: 'txais',
+        owner: 'TxaisX',
         repo: 'nightshift',
         number: 123,
         body: 'done'
@@ -141,7 +141,7 @@ describe('NightshiftRuntimeRpcServer', () => {
       method: 'github.project.updateIssueCommentBySlug',
       deviceToken: mobile.token,
       params: {
-        owner: 'txais',
+        owner: 'TxaisX',
         repo: 'nightshift',
         commentId: 101,
         body: 'edited'
@@ -152,7 +152,7 @@ describe('NightshiftRuntimeRpcServer', () => {
       method: 'github.project.deleteIssueCommentBySlug',
       deviceToken: mobile.token,
       params: {
-        owner: 'txais',
+        owner: 'TxaisX',
         repo: 'nightshift',
         commentId: 101
       }
@@ -664,50 +664,50 @@ describe('NightshiftRuntimeRpcServer', () => {
       page: 'page-1'
     })
     expect(mocks.listGitHubIssueTypesBySlug).toHaveBeenCalledWith({
-      owner: 'txais',
+      owner: 'TxaisX',
       repo: 'nightshift'
     })
     expect(mocks.listGitHubLabelsBySlug).toHaveBeenCalledWith({
-      owner: 'txais',
+      owner: 'TxaisX',
       repo: 'nightshift'
     })
     expect(mocks.listGitHubAssignableUsersBySlug).toHaveBeenCalledWith({
-      owner: 'txais',
+      owner: 'TxaisX',
       repo: 'nightshift',
       seedLogins: ['alex']
     })
     expect(mocks.updateGitHubIssueBySlug).toHaveBeenCalledWith({
-      owner: 'txais',
+      owner: 'TxaisX',
       repo: 'nightshift',
       number: 123,
       updates: { title: 'New title' }
     })
     expect(mocks.updateGitHubIssueTypeBySlug).toHaveBeenCalledWith({
-      owner: 'txais',
+      owner: 'TxaisX',
       repo: 'nightshift',
       number: 123,
       issueTypeId: 'type-1'
     })
     expect(mocks.updateGitHubPullRequestBySlug).toHaveBeenCalledWith({
-      owner: 'txais',
+      owner: 'TxaisX',
       repo: 'nightshift',
       number: 456,
       updates: { state: 'closed' }
     })
     expect(mocks.addGitHubIssueCommentBySlug).toHaveBeenCalledWith({
-      owner: 'txais',
+      owner: 'TxaisX',
       repo: 'nightshift',
       number: 123,
       body: 'done'
     })
     expect(mocks.updateGitHubIssueCommentBySlug).toHaveBeenCalledWith({
-      owner: 'txais',
+      owner: 'TxaisX',
       repo: 'nightshift',
       commentId: 101,
       body: 'edited'
     })
     expect(mocks.deleteGitHubIssueCommentBySlug).toHaveBeenCalledWith({
-      owner: 'txais',
+      owner: 'TxaisX',
       repo: 'nightshift',
       commentId: 101
     })

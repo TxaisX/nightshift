@@ -44,8 +44,8 @@ describe('getPRForBranch', () => {
   })
 
   it('resolves fork PR push target using the origin URL protocol', async () => {
-    getOwnerRepoMock.mockResolvedValueOnce({ owner: 'txais', repo: 'nightshift' })
-    getOwnerRepoForRemoteMock.mockResolvedValueOnce({ owner: 'txais', repo: 'nightshift' })
+    getOwnerRepoMock.mockResolvedValueOnce({ owner: 'TxaisX', repo: 'nightshift' })
+    getOwnerRepoForRemoteMock.mockResolvedValueOnce({ owner: 'TxaisX', repo: 'nightshift' })
     ghExecFileAsyncMock.mockResolvedValueOnce({
       stdout: JSON.stringify({
         head: {
@@ -64,9 +64,12 @@ describe('getPRForBranch', () => {
 
     const target = await getPullRequestPushTarget('/repo-root', 1738)
 
-    expect(ghExecFileAsyncMock).toHaveBeenCalledWith(['api', 'repos/TxaisX/nightshift/pulls/1738'], {
-      cwd: '/repo-root'
-    })
+    expect(ghExecFileAsyncMock).toHaveBeenCalledWith(
+      ['api', 'repos/TxaisX/nightshift/pulls/1738'],
+      {
+        cwd: '/repo-root'
+      }
+    )
     expect(target).toEqual({
       pushTarget: {
         remoteName: 'pr-prateek-nightshift',
@@ -115,8 +118,8 @@ describe('getPRForBranch', () => {
   })
 
   it('surfaces maintainer_can_modify=false alongside a fork PR push target', async () => {
-    getOwnerRepoMock.mockResolvedValueOnce({ owner: 'txais', repo: 'nightshift' })
-    getOwnerRepoForRemoteMock.mockResolvedValueOnce({ owner: 'txais', repo: 'nightshift' })
+    getOwnerRepoMock.mockResolvedValueOnce({ owner: 'TxaisX', repo: 'nightshift' })
+    getOwnerRepoForRemoteMock.mockResolvedValueOnce({ owner: 'TxaisX', repo: 'nightshift' })
     ghExecFileAsyncMock.mockResolvedValueOnce({
       stdout: JSON.stringify({
         maintainer_can_modify: false,
@@ -145,8 +148,8 @@ describe('getPRForBranch', () => {
   })
 
   it('omits maintainerCanModify when the API does not report the flag', async () => {
-    getOwnerRepoMock.mockResolvedValueOnce({ owner: 'txais', repo: 'nightshift' })
-    getOwnerRepoForRemoteMock.mockResolvedValueOnce({ owner: 'txais', repo: 'nightshift' })
+    getOwnerRepoMock.mockResolvedValueOnce({ owner: 'TxaisX', repo: 'nightshift' })
+    getOwnerRepoForRemoteMock.mockResolvedValueOnce({ owner: 'TxaisX', repo: 'nightshift' })
     ghExecFileAsyncMock.mockResolvedValueOnce({
       stdout: JSON.stringify({
         head: {
@@ -156,7 +159,7 @@ describe('getPRForBranch', () => {
             name: 'nightshift',
             clone_url: 'https://github.com/TxaisX/nightshift.git',
             ssh_url: 'git@github.com:TxaisX/nightshift.git',
-            owner: { login: 'txais' }
+            owner: { login: 'TxaisX' }
           }
         }
       })
@@ -171,8 +174,8 @@ describe('getPRForBranch', () => {
   })
 
   it('uses origin for same-repository PR push targets', async () => {
-    getOwnerRepoMock.mockResolvedValueOnce({ owner: 'txais', repo: 'nightshift' })
-    getOwnerRepoForRemoteMock.mockResolvedValueOnce({ owner: 'txais', repo: 'nightshift' })
+    getOwnerRepoMock.mockResolvedValueOnce({ owner: 'TxaisX', repo: 'nightshift' })
+    getOwnerRepoForRemoteMock.mockResolvedValueOnce({ owner: 'TxaisX', repo: 'nightshift' })
     ghExecFileAsyncMock.mockResolvedValueOnce({
       stdout: JSON.stringify({
         head: {
@@ -182,7 +185,7 @@ describe('getPRForBranch', () => {
             name: 'nightshift',
             clone_url: 'https://github.com/TxaisX/nightshift.git',
             ssh_url: 'git@github.com:TxaisX/nightshift.git',
-            owner: { login: 'txais' }
+            owner: { login: 'TxaisX' }
           }
         }
       })
@@ -203,7 +206,7 @@ describe('getPRForBranch', () => {
     getOwnerRepoForRemoteMock.mockImplementation(async (_repoPath: string, remoteName: string) =>
       remoteName === 'origin'
         ? { owner: 'fsdwen', repo: 'nightshift' }
-        : { owner: 'txais', repo: 'nightshift' }
+        : { owner: 'TxaisX', repo: 'nightshift' }
     )
     // Why: getRepoSlug imports getOriginGitHubApiRepository; the suite bridge
     // prefers getOwnerRepoForRemote for origin, so set both seams.
@@ -222,12 +225,12 @@ describe('getPRForBranch', () => {
     getOwnerRepoForRemoteMock.mockImplementation(async (_repoPath: string, remoteName: string) =>
       remoteName === 'origin'
         ? { owner: 'tmchow', repo: 'nightshift' }
-        : { owner: 'txais', repo: 'nightshift' }
+        : { owner: 'TxaisX', repo: 'nightshift' }
     )
 
     // Why: the suite bridge returns getOwnerRepoForRemote fixtures as-is (no host pin).
     await expect(getRepoUpstream('/repo-root')).resolves.toEqual({
-      owner: 'txais',
+      owner: 'TxaisX',
       repo: 'nightshift'
     })
 
@@ -239,7 +242,7 @@ describe('getPRForBranch', () => {
     getOwnerRepoForRemoteMock.mockImplementation(async (_repoPath: string, remoteName: string) =>
       remoteName === 'origin'
         ? { owner: 'Txais', repo: 'Nightshift' }
-        : { owner: 'txais', repo: 'nightshift' }
+        : { owner: 'TxaisX', repo: 'nightshift' }
     )
     ghExecFileAsyncMock.mockResolvedValueOnce({
       stdout: JSON.stringify({ isFork: false, parent: null })
@@ -273,12 +276,12 @@ describe('getPRForBranch', () => {
     ghExecFileAsyncMock.mockResolvedValueOnce({
       stdout: JSON.stringify({
         isFork: true,
-        parent: { name: 'nightshift', owner: { login: 'txais' } }
+        parent: { name: 'nightshift', owner: { login: 'TxaisX' } }
       })
     })
 
     await expect(getRepoUpstream('/repo-root')).resolves.toEqual({
-      owner: 'txais',
+      owner: 'TxaisX',
       repo: 'nightshift',
       // Why: fork parents live on the same server as the fork's origin.
       host: 'github.com'
@@ -355,7 +358,7 @@ describe('getPRForBranch', () => {
     resolvePRRepositoryCandidatesMock.mockResolvedValueOnce({
       candidates: [
         { owner: 'fork', repo: 'nightshift' },
-        { owner: 'txais', repo: 'nightshift' }
+        { owner: 'TxaisX', repo: 'nightshift' }
       ],
       headRepo: { owner: 'fork', repo: 'nightshift' }
     })

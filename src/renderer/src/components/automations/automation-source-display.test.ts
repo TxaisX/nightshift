@@ -15,7 +15,7 @@ describe('automation source display', () => {
       accountLabel: 'dev@example.com',
       providerIdentity: {
         provider: 'github',
-        owner: 'txais',
+        owner: 'TxaisX',
         repo: 'nightshift'
       }
     }
@@ -60,7 +60,7 @@ describe('automation source display', () => {
       repoId: 'repo-runtime',
       providerIdentity: {
         provider: 'github',
-        owner: 'txais',
+        owner: 'TxaisX',
         repo: 'nightshift'
       }
     }

@@ -163,7 +163,7 @@ describe('createGitHubSlice.fetchWorkItems source/error envelope', () => {
       hostId: 'runtime:source-runtime' as const,
       projectHostSetupId: 'setup-1',
       repoId: 'source-runtime-repo-id',
-      providerIdentity: { provider: 'github' as const, owner: 'txais', repo: 'nightshift' }
+      providerIdentity: { provider: 'github' as const, owner: 'TxaisX', repo: 'nightshift' }
     }
 
     await store.getState().fetchWorkItems('caller-repo-id', '/server/repo', 24, 'is:open', {
@@ -206,7 +206,7 @@ describe('createGitHubSlice.fetchWorkItems source/error envelope', () => {
     }
     const secondSourceContext = {
       ...firstSourceContext,
-      providerIdentity: { provider: 'github' as const, owner: 'txais', repo: 'nightshift' }
+      providerIdentity: { provider: 'github' as const, owner: 'TxaisX', repo: 'nightshift' }
     }
     mockApi.gh.listWorkItems
       .mockResolvedValueOnce({
@@ -219,8 +219,8 @@ describe('createGitHubSlice.fetchWorkItems source/error envelope', () => {
       .mockResolvedValueOnce({
         items: [{ type: 'issue', number: 2, title: 'Stably', url: 'https://example.test/2' }],
         sources: {
-          issues: { owner: 'txais', repo: 'nightshift' },
-          prs: { owner: 'txais', repo: 'nightshift' }
+          issues: { owner: 'TxaisX', repo: 'nightshift' },
+          prs: { owner: 'TxaisX', repo: 'nightshift' }
         }
       })
 

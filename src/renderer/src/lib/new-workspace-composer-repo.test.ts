@@ -100,13 +100,13 @@ describe('new-workspace-composer-repo', () => {
 
   describe('resolveComposerActiveRepoId', () => {
     const localNightshift = makeRepo('local-nightshift', {
-      upstream: { owner: 'txais', repo: 'nightshift' }
+      upstream: { owner: 'TxaisX', repo: 'nightshift' }
     })
     const runtimeNightshift = makeRepo('runtime-nightshift', {
       connectionId: 'runtime-ssh-nightshift-1',
-      upstream: { owner: 'txais', repo: 'nightshift' }
+      upstream: { owner: 'TxaisX', repo: 'nightshift' }
     })
-    const otherProject = makeRepo('noqa', { upstream: { owner: 'txais', repo: 'noqa' } })
+    const otherProject = makeRepo('noqa', { upstream: { owner: 'TxaisX', repo: 'noqa' } })
     const repos = [otherProject, localNightshift, runtimeNightshift]
     const eligibleRepos = getComposerEligibleRepos(repos)
 

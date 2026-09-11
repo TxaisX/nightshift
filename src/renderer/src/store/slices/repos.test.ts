@@ -255,7 +255,7 @@ describe('repo slice runtime routing', () => {
       id: 'github:TxaisX/nightshift',
       displayName: 'Project',
       badgeColor: '#000',
-      providerIdentity: { provider: 'github', owner: 'txais', repo: 'nightshift' },
+      providerIdentity: { provider: 'github', owner: 'TxaisX', repo: 'nightshift' },
       sourceRepoIds: ['local-repo'],
       createdAt: 1,
       updatedAt: 1
@@ -294,7 +294,7 @@ describe('repo slice runtime routing', () => {
     expect(store.getState().projectHostSetups).toEqual([setup])
     expect(projectsSetupExistingFolder).toHaveBeenCalledWith({
       projectId: project.id,
-      projectProviderIdentity: { provider: 'github', owner: 'txais', repo: 'nightshift' },
+      projectProviderIdentity: { provider: 'github', owner: 'TxaisX', repo: 'nightshift' },
       hostId: 'local',
       path: '/local',
       kind: 'git'

@@ -760,8 +760,8 @@ describe('listWorkItems', () => {
   })
 
   it('marks fork PRs as cross-repository when REST payload only includes head.label', async () => {
-    getIssueOwnerRepoMock.mockResolvedValueOnce({ owner: 'txais', repo: 'nightshift' })
-    getOwnerRepoMock.mockResolvedValueOnce({ owner: 'txais', repo: 'nightshift' })
+    getIssueOwnerRepoMock.mockResolvedValueOnce({ owner: 'TxaisX', repo: 'nightshift' })
+    getOwnerRepoMock.mockResolvedValueOnce({ owner: 'TxaisX', repo: 'nightshift' })
     ghExecFileAsyncMock.mockResolvedValueOnce({ stdout: '[]' }).mockResolvedValueOnce({
       stdout: JSON.stringify([
         {
@@ -797,7 +797,7 @@ describe('listWorkItems', () => {
         branchName: 'feat/onboarding-model-choice-782',
         baseRefName: 'main',
         headSha: 'head-1849',
-        prRepo: { owner: 'txais', repo: 'nightshift' },
+        prRepo: { owner: 'TxaisX', repo: 'nightshift' },
         isCrossRepository: true
       }
     ])

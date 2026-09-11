@@ -85,24 +85,28 @@ describe('GitHub GraphQL rate-limit guard', () => {
 
     await expect(
       mergePR('/repo-root', 7, 'squash', undefined, {
-        owner: 'txais',
+        owner: 'TxaisX',
         repo: 'nightshift',
         host: 'github.com'
       })
     ).resolves.toEqual({ ok: true })
     await expect(
       updatePRTitle('/repo-root', 7, 'New title', undefined, {
-        owner: 'txais',
+        owner: 'TxaisX',
         repo: 'nightshift',
         host: 'github.com'
       })
     ).resolves.toBe(true)
 
     expect(getOwnerRepoMock).not.toHaveBeenCalled()
-    expect(ghExecFileAsyncMock).toHaveBeenNthCalledWith(1, ['api', 'repos/TxaisX/nightshift/pulls/7'], {
-      cwd: '/repo-root',
-      host: 'github.com'
-    })
+    expect(ghExecFileAsyncMock).toHaveBeenNthCalledWith(
+      1,
+      ['api', 'repos/TxaisX/nightshift/pulls/7'],
+      {
+        cwd: '/repo-root',
+        host: 'github.com'
+      }
+    )
     expect(ghExecFileAsyncMock).toHaveBeenNthCalledWith(
       2,
       [
@@ -142,22 +146,26 @@ describe('GitHub GraphQL rate-limit guard', () => {
 
     await expect(
       setPRAutoMerge('/remote/repo-root', 7, true, 'squash', 'ssh-1', {
-        owner: 'txais',
+        owner: 'TxaisX',
         repo: 'nightshift',
         host: 'github.com'
       })
     ).resolves.toEqual({ ok: true })
     await expect(
       setPRAutoMerge('/remote/repo-root', 7, false, 'squash', 'ssh-1', {
-        owner: 'txais',
+        owner: 'TxaisX',
         repo: 'nightshift',
         host: 'github.com'
       })
     ).resolves.toEqual({ ok: true })
 
-    expect(ghExecFileAsyncMock).toHaveBeenNthCalledWith(1, ['api', 'repos/TxaisX/nightshift/pulls/7'], {
-      host: 'github.com'
-    })
+    expect(ghExecFileAsyncMock).toHaveBeenNthCalledWith(
+      1,
+      ['api', 'repos/TxaisX/nightshift/pulls/7'],
+      {
+        host: 'github.com'
+      }
+    )
     expect(ghExecFileAsyncMock).toHaveBeenNthCalledWith(
       2,
       ['pr', 'view', '7', '--json', 'id,headRefOid,baseRefName', '--repo', 'TxaisX/nightshift'],
@@ -201,7 +209,7 @@ describe('GitHub GraphQL rate-limit guard', () => {
 
     await expect(
       setPRAutoMerge('/repo-root', 7, true, 'squash', undefined, {
-        owner: 'txais',
+        owner: 'TxaisX',
         repo: 'nightshift',
         host: 'github.com'
       })
@@ -239,7 +247,7 @@ describe('GitHub GraphQL rate-limit guard', () => {
 
     await expect(
       setPRAutoMerge('/repo-root', 202, true, 'squash', undefined, {
-        owner: 'txais',
+        owner: 'TxaisX',
         repo: 'nightshift',
         host: 'github.com'
       })
@@ -260,7 +268,7 @@ describe('GitHub GraphQL rate-limit guard', () => {
 
     await expect(
       setPRAutoMerge('/repo-root', 7, true, 'squash', undefined, {
-        owner: 'txais',
+        owner: 'TxaisX',
         repo: 'nightshift',
         host: 'github.com'
       })
@@ -283,7 +291,7 @@ describe('GitHub GraphQL rate-limit guard', () => {
 
     await expect(
       setPRAutoMerge('/repo-root', 7, true, 'squash', undefined, {
-        owner: 'txais',
+        owner: 'TxaisX',
         repo: 'nightshift',
         host: 'github.com'
       })
@@ -334,7 +342,7 @@ describe('GitHub GraphQL rate-limit guard', () => {
 
     await expect(
       mergePR('/repo-root', 7, 'squash', undefined, {
-        owner: 'txais',
+        owner: 'TxaisX',
         repo: 'nightshift',
         host: 'github.com'
       })
@@ -375,7 +383,7 @@ describe('GitHub GraphQL rate-limit guard', () => {
 
     await expect(
       mergePR('/repo-root', 7, 'squash', undefined, {
-        owner: 'txais',
+        owner: 'TxaisX',
         repo: 'nightshift',
         host: 'github.com'
       })
@@ -385,7 +393,7 @@ describe('GitHub GraphQL rate-limit guard', () => {
         'This pull request must be merged through GitHub merge queue. Use Merge when ready instead.'
     })
     await expect(
-      mergePR('/repo-root', 7, 'squash', undefined, { owner: 'txais', repo: 'nightshift' })
+      mergePR('/repo-root', 7, 'squash', undefined, { owner: 'TxaisX', repo: 'nightshift' })
     ).resolves.toMatchObject({ ok: false })
 
     expect(
@@ -398,7 +406,7 @@ describe('GitHub GraphQL rate-limit guard', () => {
   })
 
   it('caches unknown merge queue probes after GraphQL failures', async () => {
-    getOwnerRepoMock.mockResolvedValue({ owner: 'txais', repo: 'nightshift' })
+    getOwnerRepoMock.mockResolvedValue({ owner: 'TxaisX', repo: 'nightshift' })
     const prView = {
       number: 7,
       title: 'PR',
@@ -435,7 +443,7 @@ describe('GitHub GraphQL rate-limit guard', () => {
   })
 
   it('bounds merge metadata cache entries across many base branches', async () => {
-    getOwnerRepoMock.mockResolvedValue({ owner: 'txais', repo: 'nightshift' })
+    getOwnerRepoMock.mockResolvedValue({ owner: 'TxaisX', repo: 'nightshift' })
     let prViewCount = 0
     ghExecFileAsyncMock.mockImplementation(async (args) => {
       if (args.includes('graphql')) {
@@ -572,7 +580,7 @@ describe('GitHub GraphQL rate-limit guard', () => {
 
     await expect(
       mergePR('/repo-root', 7, 'squash', undefined, {
-        owner: 'txais',
+        owner: 'TxaisX',
         repo: 'nightshift',
         host: 'github.com'
       })
@@ -610,7 +618,7 @@ describe('GitHub GraphQL rate-limit guard', () => {
 
     await expect(
       mergePR('/remote/repo-root', 7, 'squash', 'ssh-1', {
-        owner: 'txais',
+        owner: 'TxaisX',
         repo: 'nightshift',
         host: 'github.com'
       })

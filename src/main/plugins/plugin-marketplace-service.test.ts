@@ -150,7 +150,7 @@ describe('PluginMarketplaceService', () => {
   it('derives the Official badge only from the canonical marketplace and source organization', async () => {
     const officialMarketplace: PluginMarketplace = {
       name: 'Nightshift Plugins',
-      owner: 'txais',
+      owner: 'TxaisX',
       plugins: [
         {
           id: 'txais.nightshift-shortcuts',
@@ -219,7 +219,7 @@ describe('PluginMarketplaceService', () => {
       'txais.nightshift-notes',
       'https://github.com/TxaisX/nightshift-notes.git'
     )
-    officialMarketplace.owner = 'txais'
+    officialMarketplace.owner = 'TxaisX'
     const fetcher = vi.fn(async () => fetched(officialMarketplace))
     const first = new PluginMarketplaceService({ pluginsDataDir: root, fetcher })
 
@@ -262,7 +262,7 @@ describe('PluginMarketplaceService', () => {
       'txais.nightshift-notes',
       'https://github.com/TxaisX/nightshift-notes.git'
     )
-    officialMarketplace.owner = 'txais'
+    officialMarketplace.owner = 'TxaisX'
     const listSources = vi
       .fn<() => Promise<readonly PluginMarketplaceRegisteredSource[]>>()
       .mockRejectedValueOnce(new Error('source store temporarily unavailable'))
@@ -307,7 +307,7 @@ describe('PluginMarketplaceService', () => {
       'txais.nightshift-notes',
       'https://github.com/TxaisX/nightshift-notes.git'
     )
-    officialMarketplace.owner = 'txais'
+    officialMarketplace.owner = 'TxaisX'
     const service = new PluginMarketplaceService({
       pluginsDataDir: root,
       store,

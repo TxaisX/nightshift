@@ -102,8 +102,14 @@ pnpm run build:win       # unsigned installer in dist/
   with playwright-core over the debugging protocol. Screenshots time out waiting on fonts;
   read `document.body.innerText` instead. The native folder dialog cannot be automated, so
   add a project with `window.api.repos.add({ path, kind: 'folder' })` from the page instead.
-- **Max 300 code lines per file**, enforced by lint. Add a sibling file rather than growing
-  one, and never disable the rule.
+- **Max 300 code lines per file** (400 `.tsx`, 600 `.mjs`, 800 test files), enforced by lint.
+  Blank lines and comments are not counted, so comments are free. Add a sibling file rather
+  than growing one, and never disable the rule: `AGENTS.md` forbids it and a ratchet test
+  enforces it. Every file in the repo is currently under budget, so `pnpm exec oxlint` exits
+  clean — keep it that way.
+- **Do not commit with `--no-verify` unless you have a reason.** The pre-commit hook is what
+  lints staged files against the real config, so bypassing it is how an oversized file or a
+  formatting drift reaches CI.
 - **Clean `out/` before packaging a release build.** `out/` is gitignored and never pruned, so
   a file deleted from source survives there and electron-builder packages it. A stale
   `fleet-workspaces-dir.js` from an earlier name shipped inside an installer this way.

@@ -40,7 +40,7 @@ describe('GitHub GraphQL rate-limit guard', () => {
 
   it('hydrates GitHub-registered stack metadata for exact linked PRs', async () => {
     getOwnerRepoMock.mockResolvedValue({
-      owner: 'txais',
+      owner: 'TxaisX',
       repo: 'nightshift',
       host: 'github.com'
     })
@@ -193,7 +193,7 @@ describe('GitHub GraphQL rate-limit guard', () => {
 
     await expect(
       mergePR('/repo-root', 202, 'squash', undefined, {
-        owner: 'txais',
+        owner: 'TxaisX',
         repo: 'nightshift',
         host: 'github.com'
       })
@@ -241,7 +241,7 @@ describe('GitHub GraphQL rate-limit guard', () => {
 
     await expect(
       mergePR('/repo-root', 202, 'squash', undefined, {
-        owner: 'txais',
+        owner: 'TxaisX',
         repo: 'nightshift',
         host: 'github.com'
       })
@@ -562,7 +562,7 @@ describe('GitHub GraphQL rate-limit guard', () => {
       .mockResolvedValueOnce({ stdout: '', stderr: '' })
 
     const result = await mergePR(scenario.repoPath, 202, 'squash', scenario.connectionId, {
-      owner: 'txais',
+      owner: 'TxaisX',
       repo: 'nightshift',
       host: scenario.expectedOptions.host
     })
@@ -633,7 +633,7 @@ describe('GitHub GraphQL rate-limit guard', () => {
 
     await expect(
       mergePR('/repo-root', 13866, 'squash', undefined, {
-        owner: 'txais',
+        owner: 'TxaisX',
         repo: 'nightshift',
         host: 'github.com'
       })
@@ -678,7 +678,7 @@ describe('GitHub GraphQL rate-limit guard', () => {
 
     await expect(
       mergePR('/repo-root', 202, 'squash', undefined, {
-        owner: 'txais',
+        owner: 'TxaisX',
         repo: 'nightshift',
         host: 'github.com'
       })

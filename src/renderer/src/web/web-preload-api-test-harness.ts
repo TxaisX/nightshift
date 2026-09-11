@@ -1,5 +1,6 @@
 import { vi } from 'vitest'
 import type { PreloadApi } from '../../../preload/api-types'
+import type { PairingLocalUiField } from '../../../shared/pairing-local-ui-fields'
 
 export const TEST_COMMIT_OID = '0123456789abcdef0123456789abcdef01234567'
 
@@ -103,4 +104,38 @@ export function encodePairingCode(overrides: Record<string, unknown> = {}): stri
     }),
     'utf8'
   ).toString('base64url')
+}
+
+// Census-driven, matching the host-side seam tests: a field added to PAIRING_LOCAL_UI_FIELDS
+// without wiring the web read seam fails here rather than shipping. The host sample differs from
+// the browser's for every field, so only the pin makes this pass.
+export const browserLocalUiSamples: Record<PairingLocalUiField, unknown> = {
+  automationHostFilter: { kind: 'host', hostKey: 'browser-local-host-key' },
+  hideWorkspacesFromOtherDevices: true,
+  manualRepoOrder: [{ hostId: 'runtime:web-env-1', repoId: 'repo-b' }],
+  workspaceHostOrder: ['runtime:web-env-1', 'local'],
+  agentsVisibleHostIds: ['runtime:web-env-1'],
+  agentsFilterRepoIds: ['repo-b'],
+  agentsShowChildAgents: true,
+  agentsCompactMode: false,
+  agentsShowSearch: false,
+  agentsReadFilter: 'unread',
+  agentsGroupBy: 'project',
+  activityClearedAtByPaneKey: { 'tab-1:leaf-1': 123 },
+  manuallyUnreadTurnsByPaneKey: { 'tab-1:leaf-1': 321 }
+}
+export const hostUiSamples: Record<PairingLocalUiField, unknown> = {
+  automationHostFilter: { kind: 'all' },
+  hideWorkspacesFromOtherDevices: false,
+  manualRepoOrder: [{ hostId: 'local', repoId: 'repo-a' }],
+  workspaceHostOrder: ['local', 'ssh:box'],
+  agentsVisibleHostIds: ['local'],
+  agentsFilterRepoIds: ['repo-a'],
+  agentsShowChildAgents: false,
+  agentsCompactMode: true,
+  agentsShowSearch: true,
+  agentsReadFilter: 'all',
+  agentsGroupBy: 'status',
+  activityClearedAtByPaneKey: { 'tab-2:leaf-2': 456 },
+  manuallyUnreadTurnsByPaneKey: { 'tab-2:leaf-2': 654 }
 }

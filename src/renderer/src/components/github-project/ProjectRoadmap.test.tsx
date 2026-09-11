@@ -68,7 +68,7 @@ function table(fields: GitHubProjectField[], rows: GitHubProjectRow[]): GitHubPr
   return {
     project: {
       id: 'PVT_1',
-      owner: 'txais',
+      owner: 'TxaisX',
       ownerType: 'organization',
       number: 3,
       title: 'Nightshift',

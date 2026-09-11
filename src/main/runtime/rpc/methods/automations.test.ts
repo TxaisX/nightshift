@@ -49,7 +49,7 @@ describe('automation RPC methods', () => {
           hostId: 'local',
           projectHostSetupId: 'setup-local',
           repoId: 'repo-local',
-          providerIdentity: { provider: 'github', owner: 'txais', repo: 'nightshift' }
+          providerIdentity: { provider: 'github', owner: 'TxaisX', repo: 'nightshift' }
         },
         repo: 'repo-1',
         setupDecision: 'skip',

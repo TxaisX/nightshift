@@ -98,7 +98,7 @@ describe('RepositoryIconPicker GitHub avatar refresh', () => {
     const updateRepo = vi.fn()
     // A fork whose avatar tracks its parent org, resolved earlier while online.
     const repo = makeRepo({
-      upstream: { owner: 'txais', repo: 'nightshift' },
+      upstream: { owner: 'TxaisX', repo: 'nightshift' },
       repoIcon: {
         type: 'image',
         src: 'https://github.com/txais.png?size=64',

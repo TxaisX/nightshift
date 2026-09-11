@@ -36,8 +36,8 @@ describe('resolveRepoBackedProjectDialogState', () => {
 
 describe('resolveMissingRepoProjectDialogState', () => {
   it('clears fallback dialogs while the slug index is rebuilding', () => {
-    const slugDialog = { origin: { owner: 'txais', repo: 'nightshift' } }
-    const repoNotInNightshift = { owner: 'txais', repo: 'nightshift', url: null }
+    const slugDialog = { origin: { owner: 'TxaisX', repo: 'nightshift' } }
+    const repoNotInNightshift = { owner: 'TxaisX', repo: 'nightshift', url: null }
 
     expect(
       resolveMissingRepoProjectDialogState({
@@ -51,7 +51,7 @@ describe('resolveMissingRepoProjectDialogState', () => {
   })
 
   it('clears slug fallback dialogs once the repo slug resolves', () => {
-    const slugDialog = { origin: { owner: 'txais', repo: 'nightshift' } }
+    const slugDialog = { origin: { owner: 'TxaisX', repo: 'nightshift' } }
     const repoNotInNightshift = { owner: 'other', repo: 'tool', url: null }
     const result = resolveMissingRepoProjectDialogState({
       slugIndexReady: true,
@@ -67,7 +67,7 @@ describe('resolveMissingRepoProjectDialogState', () => {
 
   it('clears repo-not-in-nightshift dialogs once the repo slug resolves', () => {
     const slugDialog = { origin: { owner: 'other', repo: 'tool' } }
-    const repoNotInNightshift = { owner: 'txais', repo: 'nightshift', url: null }
+    const repoNotInNightshift = { owner: 'TxaisX', repo: 'nightshift', url: null }
     const result = resolveMissingRepoProjectDialogState({
       slugIndexReady: true,
       slugDialog,
@@ -81,8 +81,8 @@ describe('resolveMissingRepoProjectDialogState', () => {
   })
 
   it('clears fallback dialogs when the repo is globally known but not selected', () => {
-    const slugDialog = { origin: { owner: 'txais', repo: 'nightshift' } }
-    const repoNotInNightshift = { owner: 'txais', repo: 'nightshift', url: null }
+    const slugDialog = { origin: { owner: 'TxaisX', repo: 'nightshift' } }
+    const repoNotInNightshift = { owner: 'TxaisX', repo: 'nightshift', url: null }
     const result = resolveMissingRepoProjectDialogState({
       slugIndexReady: true,
       slugDialog,
@@ -95,8 +95,8 @@ describe('resolveMissingRepoProjectDialogState', () => {
   })
 
   it('keeps missing-repo fallback dialogs when there are no global matches', () => {
-    const slugDialog = { origin: { owner: 'txais', repo: 'nightshift' } }
-    const repoNotInNightshift = { owner: 'txais', repo: 'nightshift', url: null }
+    const slugDialog = { origin: { owner: 'TxaisX', repo: 'nightshift' } }
+    const repoNotInNightshift = { owner: 'TxaisX', repo: 'nightshift', url: null }
     const result = resolveMissingRepoProjectDialogState({
       slugIndexReady: true,
       slugDialog,

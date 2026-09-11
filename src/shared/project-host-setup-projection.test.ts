@@ -53,7 +53,7 @@ describe('project host setup projection', () => {
     displayName: 'nightshift',
     addedAt: 0,
     connectionId: 'gpu-vm',
-    upstream: { owner: 'txais', repo: 'nightshift' }
+    upstream: { owner: 'TxaisX', repo: 'nightshift' }
   })
 
   it('does not wipe a persisted createdAt when a sibling repo has addedAt 0', () => {
@@ -169,7 +169,7 @@ describe('project host setup projection', () => {
         path: '/home/alice/nightshift',
         displayName: 'nightshift',
         connectionId: 'gpu-vm',
-        upstream: { owner: 'txais', repo: 'nightshift' }
+        upstream: { owner: 'TxaisX', repo: 'nightshift' }
       })
     ])
 
@@ -179,9 +179,9 @@ describe('project host setup projection', () => {
       sourceRepoIds: ['local-repo', 'remote-repo'],
       providerIdentity: { provider: 'github', owner: 'Txais', repo: 'Nightshift' }
     })
-    expect(getProjectHostSetupsForProject(projection.setups, 'github:TxaisX/nightshift')).toHaveLength(
-      2
-    )
+    expect(
+      getProjectHostSetupsForProject(projection.setups, 'github:TxaisX/nightshift')
+    ).toHaveLength(2)
   })
 
   it('keeps same-named github.com and GHES repositories in separate projects', () => {
@@ -281,11 +281,11 @@ describe('project host setup projection', () => {
     expect(projection.projects[0]).toMatchObject({
       id: 'github:TxaisX/nightshift',
       sourceRepoIds: ['local-repo', 'remote-repo'],
-      providerIdentity: { provider: 'github', owner: 'txais', repo: 'nightshift' }
+      providerIdentity: { provider: 'github', owner: 'TxaisX', repo: 'nightshift' }
     })
-    expect(getProjectHostSetupsForProject(projection.setups, 'github:TxaisX/nightshift')).toHaveLength(
-      2
-    )
+    expect(
+      getProjectHostSetupsForProject(projection.setups, 'github:TxaisX/nightshift')
+    ).toHaveLength(2)
   })
 
   it('uses git remote identity as a provider identity fallback', () => {
@@ -318,7 +318,7 @@ describe('project host setup projection', () => {
       id: 'github:TxaisX/nightshift',
       displayName: 'nightshift',
       sourceRepoIds: ['canonical-local-repo', 'old-branch-checkout'],
-      providerIdentity: { provider: 'github', owner: 'txais', repo: 'nightshift' }
+      providerIdentity: { provider: 'github', owner: 'TxaisX', repo: 'nightshift' }
     })
   })
 
@@ -513,7 +513,7 @@ describe('project host setup projection', () => {
         id: 'repo-1',
         path: '/Users/alice/nightshift',
         displayName: 'nightshift',
-        upstream: { owner: 'txais', repo: 42 } as never
+        upstream: { owner: 'TxaisX', repo: 42 } as never
       })
     ])
 
@@ -527,7 +527,7 @@ describe('project host setup projection', () => {
       path: '/home/alice/nightshift',
       displayName: 'nightshift',
       connectionId: 'openclaw 2',
-      upstream: { owner: 'txais', repo: 'nightshift' }
+      upstream: { owner: 'TxaisX', repo: 'nightshift' }
     })
     const projection = projectHostSetupProjectionFromRepos([targetRepo])
 
@@ -545,7 +545,7 @@ describe('isGitHubBackedRepo', () => {
       id: 'r',
       path: '/r',
       displayName: 'r',
-      upstream: { owner: 'txais', repo: 'nightshift' }
+      upstream: { owner: 'TxaisX', repo: 'nightshift' }
     })
     expect(isGitHubBackedRepo(target)).toBe(true)
   })
@@ -623,7 +623,7 @@ describe('isProjectRemoteIdentityPending', () => {
     ).toBe(false)
     expect(
       isProjectRemoteIdentityPending(
-        repo({ ...base, upstream: { owner: 'txais', repo: 'nightshift' } })
+        repo({ ...base, upstream: { owner: 'TxaisX', repo: 'nightshift' } })
       )
     ).toBe(false)
   })

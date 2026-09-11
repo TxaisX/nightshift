@@ -12,7 +12,7 @@ describe('getSmartGitHubSubmitIntent', () => {
     expect(getSmartGitHubSubmitIntent('https://github.com/TxaisX/nightshift/pull/2049')).toEqual({
       kind: 'link',
       host: 'github.com',
-      owner: 'txais',
+      owner: 'TxaisX',
       repo: 'nightshift',
       number: 2049,
       type: 'pr'
@@ -20,7 +20,7 @@ describe('getSmartGitHubSubmitIntent', () => {
     expect(getSmartGitHubSubmitIntent('https://github.com/TxaisX/nightshift/issues/2050')).toEqual({
       kind: 'link',
       host: 'github.com',
-      owner: 'txais',
+      owner: 'TxaisX',
       repo: 'nightshift',
       number: 2050,
       type: 'issue'
@@ -63,22 +63,22 @@ describe('getSmartGitHubSubmitIntent', () => {
     ).toEqual({
       kind: 'link',
       host: 'github.com',
-      owner: 'txais',
+      owner: 'TxaisX',
       repo: 'nightshift',
       number: 2049,
       type: 'pr'
     })
 
-    expect(getSmartGitHubSubmitIntent('fix https://github.com/TxaisX/nightshift/issues/2050.')).toEqual(
-      {
-        kind: 'link',
-        host: 'github.com',
-        owner: 'txais',
-        repo: 'nightshift',
-        number: 2050,
-        type: 'issue'
-      }
-    )
+    expect(
+      getSmartGitHubSubmitIntent('fix https://github.com/TxaisX/nightshift/issues/2050.')
+    ).toEqual({
+      kind: 'link',
+      host: 'github.com',
+      owner: 'TxaisX',
+      repo: 'nightshift',
+      number: 2050,
+      type: 'issue'
+    })
   })
 
   it('treats #number as source intent but leaves plain numbers as names', () => {
@@ -112,7 +112,7 @@ describe('lookupSmartGitHubSubmitItem', () => {
     const workItem = vi.fn()
     const intent = {
       kind: 'link' as const,
-      owner: 'txais',
+      owner: 'TxaisX',
       repo: 'nightshift',
       number: 2049,
       type: 'pr' as const
@@ -142,7 +142,7 @@ describe('lookupSmartGitHubSubmitItem', () => {
   it('scopes direct URL cache entries by repo path', async () => {
     const intent = {
       kind: 'link' as const,
-      owner: 'txais',
+      owner: 'TxaisX',
       repo: 'nightshift',
       number: 2049,
       type: 'pr' as const
@@ -217,7 +217,7 @@ describe('lookupSmartGitHubSubmitItem', () => {
     const workItem = vi.fn()
     const intent = {
       kind: 'link' as const,
-      owner: 'txais',
+      owner: 'TxaisX',
       repo: 'nightshift',
       number: 2049,
       type: 'pr' as const

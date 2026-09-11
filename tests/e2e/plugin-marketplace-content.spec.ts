@@ -130,7 +130,7 @@ async function createMarketplaceFixture(): Promise<MarketplaceFixture> {
     `${JSON.stringify(
       {
         name: 'Nightshift Plugins',
-        owner: 'txais',
+        owner: 'TxaisX',
         plugins: [
           ['txais.nightshift-portuguese', 'nightshift-portuguese', 'languages'],
           ['txais.nightshift-multipass-recipes', 'nightshift-multipass-recipes', 'vm-recipes'],

@@ -308,7 +308,7 @@ describe('buildRows with pinned worktrees', () => {
       id: 'repo-analytics',
       path: '/tmp/analytics',
       displayName: 'analytics',
-      upstream: { owner: 'txais', repo: 'analytics' }
+      upstream: { owner: 'TxaisX', repo: 'analytics' }
     }
     const analyticsWorktree: Worktree = {
       ...worktree,

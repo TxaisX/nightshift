@@ -28,18 +28,18 @@ function project(
 describe('github-project-picker-filter', () => {
   it('excludes pinned and recent projects from browse results', () => {
     const projects = [
-      project('txais', 1, 'Pinned Project'),
-      project('txais', 2, 'Recent Project'),
-      project('txais', 3, 'Browse Project')
+      project('TxaisX', 1, 'Pinned Project'),
+      project('TxaisX', 2, 'Recent Project'),
+      project('TxaisX', 3, 'Browse Project')
     ]
 
     expect(
       filterGitHubProjectPickerProjects({
         projects,
-        pinned: [{ owner: 'txais', ownerType: 'organization', number: 1 }],
+        pinned: [{ owner: 'TxaisX', ownerType: 'organization', number: 1 }],
         recent: [
           {
-            owner: 'txais',
+            owner: 'TxaisX',
             ownerType: 'organization',
             number: 2,
             lastOpenedAt: '2026-06-17T00:00:00.000Z'
@@ -52,7 +52,7 @@ describe('github-project-picker-filter', () => {
 
   it('matches project title, owner, and number case-insensitively', () => {
     const projects = [
-      project('txais', 42, 'Roadmap'),
+      project('TxaisX', 42, 'Roadmap'),
       project('openai', 7, 'Launch Plan'),
       project('linear', 11, 'Triage')
     ]
@@ -96,7 +96,7 @@ describe('github-project-picker-filter', () => {
     expect(isGitHubProjectPickerQueryTooLarge(query)).toBe(true)
     expect(
       filterGitHubProjectPickerProjects({
-        projects: [project('txais', 1, 'Roadmap')],
+        projects: [project('TxaisX', 1, 'Roadmap')],
         pinned: [],
         recent: [],
         query
@@ -137,7 +137,7 @@ describe('github-project-picker-filter', () => {
   it('rejects oversized whitespace before trimming project searches', () => {
     expect(
       filterGitHubProjectPickerProjects({
-        projects: [project('txais', 1, 'Roadmap')],
+        projects: [project('TxaisX', 1, 'Roadmap')],
         pinned: [],
         recent: [],
         query: ' '.repeat(GITHUB_PROJECT_PICKER_QUERY_MAX_BYTES + 1)

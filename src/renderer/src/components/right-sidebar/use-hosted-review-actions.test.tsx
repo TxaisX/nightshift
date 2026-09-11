@@ -25,7 +25,7 @@ vi.mock('@/runtime/runtime-rpc-client', () => ({
   assertRuntimeEnvironmentCapability: runtimeRpcMocks.assertRuntimeEnvironmentCapability
 }))
 
-const prRepo = { host: 'github.com', owner: 'txais', repo: 'nightshift-sta1015-sandbox' }
+const prRepo = { host: 'github.com', owner: 'TxaisX', repo: 'nightshift-sta1015-sandbox' }
 const review: HostedReviewActionInfo = {
   provider: 'github',
   number: 1015,
